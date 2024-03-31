@@ -92,3 +92,52 @@ List *list_pushr(List *list, void *data) {
     temp->next = node_init(list, data);
     return list;
 }
+
+List *list_pushl(List *list, void *data) {
+    CHECK_NULL_EXIT(list, {
+        LOG_ERROR("list_pushl: list arg is NULL");
+    })
+
+    ListNode *new_node = node_init(list, data);
+    new_node->next = list->head;
+    list->head = new_node;
+    return list;
+}
+
+void *list_popr(List *list) {
+    CHECK_NULL_EXIT(list, {
+        LOG_ERROR("list_pushl: list arg is NULL");
+    })
+
+    if (list->head == NULL) {
+        return NULL;
+    }
+
+    ListNode *temp = list->head;
+    ListNode *prev = NULL;
+    while (temp->next != NULL) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    prev->next = NULL;
+    void *data = temp->data;
+    free(temp);
+    return data;
+}
+
+void *list_popl(List *list) {
+    CHECK_NULL_EXIT(list, {
+        LOG_ERROR("list_pushl: list arg is NULL");
+    })
+
+    if (list->head == NULL) {
+        return NULL;
+    }
+
+    ListNode *temp = list->head;
+    list->head = list->head->next;
+    void *data = temp->data;
+    free(temp);
+    return data;
+}

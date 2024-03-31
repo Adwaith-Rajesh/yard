@@ -40,4 +40,13 @@ void list_print(List *list);
 // add node to the right
 List *list_pushr(List *list, void *data);
 
+// add node to the left
+List *list_pushl(List *list, void *data);
+
+// pop the right most Node and returns the data
+void *list_popr(List *list);
+
+// pop the left most node and return the data
+void *list_popl(List *list);
+
 #endif

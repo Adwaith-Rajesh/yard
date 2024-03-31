@@ -66,6 +66,14 @@ void build_client() {
     cmd_run_sync(cmd);
 }
 
+void compile_ds() {
+    FOREACH_FILE_IN_DIR(f, PATH(SRC_DIR, "core", "ds"), {
+        if (ENDS_WITH(f, ".c")) {
+            build_file(f, PATH(SRC_DIR, "core", "ds", f));
+        }
+    });
+}
+
 void make_dirs() {
     MKDIRS(BUILD_DIR);
     MKDIRS(OUT_DIR);
@@ -76,6 +84,7 @@ int main(int argc, char **argv) {
     GO_REBUILD_URSELF(argc, argv);
 
     make_dirs();
+    compile_ds();
     build_server();
     build_client();
 }

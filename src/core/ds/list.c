@@ -141,3 +141,39 @@ void *list_popl(List *list) {
     free(temp);
     return data;
 }
+
+List *list_delete(List *list, int (*match)(ListNode *)) {
+    CHECK_NULL_EXIT(list, {
+        LOG_ERROR("list_delete: list arg is NULL");
+    })
+
+    if (list->head == NULL) {
+        return list;
+    }
+
+    // check whether the head matches
+    ListNode *temp = list->head;
+    while (list->head != NULL && match(list->head) == 1) {
+        temp = list->head;
+        list->head = list->head->next;
+        node_free(list, temp);
+    }
+
+    if (list->head == NULL) {
+        return list;
+    }
+
+    ListNode *curr = list->head->next;
+    ListNode *prev = list->head;
+
+    while (curr != NULL) {
+        if (match(curr) == 1) {
+            temp = curr;
+            prev->next = curr->next;
+            curr = curr->next;
+            node_free(list, temp);
+        }
+    }
+
+    return list;
+}

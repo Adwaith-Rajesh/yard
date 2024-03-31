@@ -49,4 +49,7 @@ void *list_popr(List *list);
 // pop the left most node and return the data
 void *list_popl(List *list);
 
+// delete a node if the condition matches
+List *list_delete(List *list, int (*match)(ListNode *));
+
 #endif

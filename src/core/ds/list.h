@@ -10,9 +10,9 @@ typedef struct _node {
 
 typedef struct {
     ListNode *head;
-    void *(*allocator)(size_t);             // maybe one data we can implement an arena allocator
-    void (*node_data_free_fn)(ListNode *);  // a function used to free the node data
-    void (*node_print_fn)(ListNode *);      // a function used to print the node data
+    void *(*allocator)(size_t);         // maybe one data we can implement an arena allocator
+    void (*node_data_free_fn)(void *);  // a function used to free the node data
+    void (*node_print_fn)(ListNode *);  // a function used to print the node data
 } List;
 
 // Node

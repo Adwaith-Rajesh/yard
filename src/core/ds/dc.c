@@ -50,12 +50,12 @@ void container_print(Container *container) {
     }
 
     if (container->type == FLOAT) {
-        printf("Container{container_t = INT, data = %f}\n", container->data._float);
+        printf("Container{container_t = FLOAT, data = %f}\n", container->data._float);
         return;
     }
 
     if (container->type == STR) {
-        printf("Container{container_t = INT, data = %s}\n", container->data._str);
+        printf("Container{container_t = STR, data = %s}\n", container->data._str);
         return;
     }
 }

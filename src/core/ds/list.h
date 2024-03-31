@@ -29,7 +29,7 @@ void node_free(List *list, ListNode *node);
 // List
 
 // create a new list
-List *list_init(void *(*allocator)(size_t), void (*node_data_free_fn)(ListNode *), void (*node_print_fn)(ListNode *));
+List *list_init(void *(*allocator)(size_t), void (*node_data_free_fn)(void *), void (*node_print_fn)(ListNode *));
 
 // free the entire list
 void list_free(List *list);

@@ -14,7 +14,7 @@ ListNode *node_init(List *list, void *data) {
     return new_node;
 }
 
-List *list_init(void *(*allocator)(size_t), void (*node_data_free_fn)(ListNode *), void (*node_print_fn)(ListNode *)) {
+List *list_init(void *(*allocator)(size_t), void (*node_data_free_fn)(void *), void (*node_print_fn)(ListNode *)) {
     CHECK_NULL_EXIT(allocator, {
         LOG_ERROR("list_init: allocator arg cannot be NULL");
     });

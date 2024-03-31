@@ -15,13 +15,6 @@ typedef enum {
 #define LOG_INFO(msg) log_msg(INFO, msg, __FILE__, __LINE__)
 #define LOG_DEBUG(msg) log_msg(DEBUG, msg, __FILE__, __LINE__)
 
-#ifdef INCLUDE_LOG_IMPLEMENTATION
-
-#include <stdio.h>
-#include <stdlib.h>
-
 void log_msg(Level level, const char *msg, const char *filename, int lineno);
-
-#endif
 
 #endif

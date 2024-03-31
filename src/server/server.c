@@ -25,6 +25,9 @@ struct Server server_init(int domain, int service, int protocol,
         exit(EXIT_FAILURE);
     }
 
+    int option = 1;
+    setsockopt(server.socket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+
     // bind the server to the address
     if (bind(server.socket, (struct sockaddr *)&server.address, sizeof(server.address)) < 0) {
         perror("Failed to bind socket...\n");

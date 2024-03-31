@@ -1,6 +1,5 @@
 #include "core/ds/list.h"
 
-#define INCLUDE_LOG_IMPLEMENTATION
 #include "core/utils/check.h"
 #include "core/utils/log.h"
 

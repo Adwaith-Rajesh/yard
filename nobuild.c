@@ -74,6 +74,14 @@ void compile_ds() {
     });
 }
 
+void compile_utils() {
+    FOREACH_FILE_IN_DIR(f, PATH(SRC_DIR, "core", "utils"), {
+        if (ENDS_WITH(f, ".c")) {
+            build_file(f, PATH(SRC_DIR, "core", "utils", f));
+        }
+    });
+}
+
 void make_dirs() {
     MKDIRS(BUILD_DIR);
     MKDIRS(OUT_DIR);
@@ -84,6 +92,7 @@ int main(int argc, char **argv) {
     GO_REBUILD_URSELF(argc, argv);
 
     make_dirs();
+    compile_utils();
     compile_ds();
     build_server();
     build_client();

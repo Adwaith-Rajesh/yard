@@ -106,7 +106,7 @@ List *list_pushl(List *list, void *data) {
 
 void *list_popr(List *list) {
     CHECK_NULL_EXIT(list, {
-        LOG_ERROR("list_pushl: list arg is NULL");
+        LOG_ERROR("list_popr: list arg is NULL");
     })
 
     if (list->head == NULL) {
@@ -128,7 +128,7 @@ void *list_popr(List *list) {
 
 void *list_popl(List *list) {
     CHECK_NULL_EXIT(list, {
-        LOG_ERROR("list_pushl: list arg is NULL");
+        LOG_ERROR("list_popl: list arg is NULL");
     })
 
     if (list->head == NULL) {

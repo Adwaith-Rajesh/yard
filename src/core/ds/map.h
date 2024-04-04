@@ -13,7 +13,8 @@
 // PREVENTS UNECESSARY MEMORY ALLOCATIONS, YOU IDIOT.
 
 typedef struct _map_entry {
-    char *key;
+    // why compare strings when you can easily compare numbers
+    unsigned long long hash;
     void *val;
     struct _map_entry *next;
 } MapEntry;
@@ -35,8 +36,11 @@ typedef struct {
 
 } Map;
 
-// returns a hash for the given key (djb2 hash mod maxsize)
-unsigned int hash(const char *key);
+// returns a hash for the given key (first 64bit of SHA256)
+unsigned long long hash(const char *key);
+
+// get the index of the entry in the map
+size_t map_index(const char *key);
 
 // create a Map
 // if table_size if 0 then MAX_TABLE_SIZE will be used

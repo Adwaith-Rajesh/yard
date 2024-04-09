@@ -14,9 +14,12 @@ ListNode *node_init(List *list, void *data) {
     return new_node;
 }
 
-List *list_init(void *(*allocator)(size_t), void (*node_data_free_fn)(void *), void (*node_print_fn)(ListNode *)) {
+List *list_init(void *(*allocator)(size_t), void (*deallocator)(void *), void (*node_data_free_fn)(void *), void (*node_print_fn)(ListNode *)) {
     CHECK_NULL_EXIT(allocator, {
         LOG_ERROR("list_init: allocator arg cannot be NULL");
+    });
+    CHECK_NULL_EXIT(deallocator, {
+        LOG_ERROR("list_init: deallocator arg cannot be NULL");
     });
 
     if (node_data_free_fn == NULL) {
@@ -25,6 +28,7 @@ List *list_init(void *(*allocator)(size_t), void (*node_data_free_fn)(void *), v
 
     List *new_list = allocator(sizeof(List));
     new_list->allocator = allocator;
+    new_list->deallocator = deallocator;
     new_list->node_data_free_fn = node_data_free_fn;
     new_list->node_print_fn = node_print_fn;
     new_list->head = NULL;
@@ -40,7 +44,7 @@ void node_free(List *list, ListNode *node) {
         list->node_data_free_fn(node->data);
     };
 
-    free(node);
+    list->deallocator(node);
 }
 
 void list_free(List *list) {
@@ -54,7 +58,7 @@ void list_free(List *list) {
         list->head = list->head->next;
         node_free(list, temp);
     }
-    free(list);
+    list->deallocator(list);
 }
 
 void node_print(List *list, ListNode *node) {
@@ -121,7 +125,7 @@ void *list_popr(List *list) {
 
     prev->next = NULL;
     void *data = temp->data;
-    free(temp);
+    list->deallocator(temp);
     return data;
 }
 
@@ -137,7 +141,7 @@ void *list_popl(List *list) {
     ListNode *temp = list->head;
     list->head = list->head->next;
     void *data = temp->data;
-    free(temp);
+    list->deallocator(temp);
     return data;
 }
 

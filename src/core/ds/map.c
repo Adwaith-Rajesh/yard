@@ -97,3 +97,29 @@ void *map_get(Map *map, const char *key) {
     }
     return NULL;
 }
+
+void map_delete(Map *map, const char *key) {
+    size_t index = MAP_INDEX(key);
+
+    if (map->entries[index] == NULL) {
+        return;
+    }
+
+    MapEntry *temp = map->entries[index];
+    MapEntry *prev = NULL;
+    while (temp != NULL && strncmp(temp->key, key, strlen(key))) {
+        temp = temp->next;
+    }
+
+    // first node
+    if (prev == NULL) {
+        map->entries[index] = map->entries[index]->next;
+        map->map_val_free_fn(temp->val);
+        map->deallocator(temp);
+        return;
+    }
+
+    prev->next = temp->next;
+    map->map_val_free_fn(temp->val);
+    map->deallocator(temp);
+}

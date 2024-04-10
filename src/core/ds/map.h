@@ -45,10 +45,10 @@ unsigned long hash(const char *key);
 // create a Map
 // if table_size if 0 then MAX_TABLE_SIZE will be used
 // allocator cannot be NULL, the rest fn pointer can be NULL
-Map *map_create(size_t table_size, void *(*allocator)(size_t), void (*map_val_free_fn)(void *), void (*map_entry_print_fn)(MapEntry *));
+Map *map_create(size_t table_size, void *(*allocator)(size_t), void (*deallocator)(void *), void (*map_val_free_fn)(void *), void (*map_entry_print_fn)(MapEntry *));
 
 // create a MapEntry for the given key value pair
-MapEntry *map_create_kv_pair(Map *map, const char key, const char *val);
+MapEntry *map_create_kv_pair(Map *map, const char *key, void *val);
 
 // add key value to the map
 void map_set(Map *map, const char *key, const char *val);

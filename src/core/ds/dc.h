@@ -15,7 +15,7 @@ typedef enum {
 typedef struct {
     container_t type;
     union {
-        char _str[1024];
+        char *_str;
         int _int;
         float _float;
     } data;
@@ -25,9 +25,9 @@ Container *create_int_container(int data, void *(allocator)(size_t));
 
 Container *create_float_container(float data, void *(allocator)(size_t));
 
-Container *create_str_container(char data[1024], void *(allocator)(size_t));
+Container *create_str_container(const char *data, void *(allocator)(size_t));
 
-void container_free(Container *container);
+void container_free(Container *container, void (*deallocator)(void *));
 
 void container_print(Container *container);
 

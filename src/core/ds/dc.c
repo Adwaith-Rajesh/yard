@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 
 #include "core/utils/log.h"
 
@@ -20,23 +21,26 @@ Container *create_float_container(float data, void *(allocator)(size_t)) {
     return new_container;
 }
 
-Container *create_str_container(char data[1024], void *(allocator)(size_t)) {
-    if (strlen(data) > 1022) {
-        LOG_WARN("create_str_container: data len exceeds the 1022 char limit. truncating data.");
-        data[1023] = 0;
-    }
-
+Container *create_str_container(const char *data, void *(allocator)(size_t)) {
     Container *new_container = allocator(sizeof(Container));
     new_container->type = STR;
-    strncpy(new_container->data._str, data, 1024);
+    size_t data_len = strlen(data);
+    new_container->data._str = allocator(data_len + 1);
+    bzero(new_container->data._str, data_len + 1);
+    strncpy(new_container->data._str, data, data_len + 1);
     return new_container;
 }
 
-void container_free(Container *container) {
+void container_free(Container *container, void (*deallocator)(void *)) {
     if (container == NULL) {
         return;
     }
-    free(container);
+
+    if (container->type == STR) {
+        deallocator(container->data._str);
+    }
+
+    deallocator(container);
 }
 
 void container_print(Container *container) {

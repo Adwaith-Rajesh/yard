@@ -4,10 +4,6 @@
 #include "core/utils/log.h"
 
 ListNode *node_init(List *list, void *data) {
-    CHECK_NULL_EXIT(list, {
-        LOG_ERROR("node_init: list arg cannot be NULL");
-    });
-
     ListNode *new_node = list->allocator(sizeof(ListNode));
     new_node->data = data;
     new_node->next = NULL;
@@ -15,13 +11,6 @@ ListNode *node_init(List *list, void *data) {
 }
 
 List *list_init(void *(*allocator)(size_t), void (*deallocator)(void *), void (*node_data_free_fn)(void *), void (*node_print_fn)(ListNode *)) {
-    CHECK_NULL_EXIT(allocator, {
-        LOG_ERROR("list_init: allocator arg cannot be NULL");
-    });
-    CHECK_NULL_EXIT(deallocator, {
-        LOG_ERROR("list_init: deallocator arg cannot be NULL");
-    });
-
     if (node_data_free_fn == NULL) {
         LOG_WARN("list_init: node_data_free_fn is NULL");
     }
@@ -78,11 +67,6 @@ void list_print(List *list) {
 }
 
 List *list_pushr(List *list, void *data) {
-    // if you are trying to push to a NULL list, something is obviously wrong
-    CHECK_NULL_EXIT(list, {
-        LOG_ERROR("list_pushr: list arg is NULL");
-    })
-
     if (list->head == NULL) {
         list->head = node_init(list, data);
         return list;
@@ -97,10 +81,6 @@ List *list_pushr(List *list, void *data) {
 }
 
 List *list_pushl(List *list, void *data) {
-    CHECK_NULL_EXIT(list, {
-        LOG_ERROR("list_pushl: list arg is NULL");
-    })
-
     ListNode *new_node = node_init(list, data);
     new_node->next = list->head;
     list->head = new_node;
@@ -108,10 +88,6 @@ List *list_pushl(List *list, void *data) {
 }
 
 void *list_popr(List *list) {
-    CHECK_NULL_EXIT(list, {
-        LOG_ERROR("list_popr: list arg is NULL");
-    })
-
     if (list->head == NULL) {
         return NULL;
     }
@@ -130,10 +106,6 @@ void *list_popr(List *list) {
 }
 
 void *list_popl(List *list) {
-    CHECK_NULL_EXIT(list, {
-        LOG_ERROR("list_popl: list arg is NULL");
-    })
-
     if (list->head == NULL) {
         return NULL;
     }
@@ -146,10 +118,6 @@ void *list_popl(List *list) {
 }
 
 List *list_delete(List *list, int (*match)(ListNode *)) {
-    CHECK_NULL_EXIT(list, {
-        LOG_ERROR("list_delete: list arg is NULL");
-    })
-
     if (list->head == NULL) {
         return list;
     }

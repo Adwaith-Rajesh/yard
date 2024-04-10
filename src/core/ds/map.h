@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-#define MAX_TABLE_SIZE 10000
+#define MAX_MAP_SIZE 10000
 
 // Is this is this a linked list is disguise?
 // Yes, It Is.
@@ -14,7 +14,7 @@
 
 typedef struct _map_entry {
     // why compare strings when you can easily compare numbers
-    const char *key;
+    char *key;
     void *val;
     struct _map_entry *next;
 } MapEntry;
@@ -51,7 +51,7 @@ Map *map_create(size_t table_size, void *(*allocator)(size_t), void (*deallocato
 MapEntry *map_create_kv_pair(Map *map, const char *key, void *val);
 
 // add key value to the map
-void map_set(Map *map, const char *key, const char *val);
+void map_set(Map *map, const char *key, void *val);
 
 // get value for the key
 // return NULL is key does not exists.

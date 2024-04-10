@@ -6,24 +6,18 @@
 #include "core/utils/check.h"
 #include "core/utils/log.h"
 
+#define MAP_INDEX(key) (hash(key) % MAX_MAP_SIZE)
+
 Map *map_create(size_t table_size,
                 void *(*allocator)(size_t),
                 void (*deallocator)(void *),
                 void (*map_val_free_fn)(void *),
                 void (*map_entry_print_fn)(MapEntry *)) {
-    CHECK_NULL_EXIT(allocator, {
-        LOG_ERROR("map_create: allocator cannot be null");
-    });
-
-    CHECK_NULL_EXIT(deallocator, {
-        LOG_ERROR("map_create: deallocator cannot be null");
-    });
-
-    size_t _t_size = (table_size != 0) ? table_size : MAX_TABLE_SIZE;
+    size_t _t_size = (table_size != 0) ? table_size : MAX_MAP_SIZE;
 
     Map *new_map = allocator(sizeof(Map));
     new_map->allocator = allocator;
-    new_map->deallocator;
+    new_map->deallocator = deallocator;
     new_map->map_val_free_fn = map_val_free_fn;
     new_map->map_entry_print_fn = map_entry_print_fn;
 
@@ -50,10 +44,6 @@ unsigned long hash(const char *key) {
 }
 
 MapEntry *map_create_kv_pair(Map *map, const char *key, void *val) {
-    CHECK_NULL_EXIT(map, {
-        LOG_ERROR("map_create_kv_pair: map cannot be NULL");
-    })
-
     MapEntry *new_map_entry = map->allocator(sizeof(MapEntry));
 
     size_t key_len = strlen(key) + 1;
@@ -65,4 +55,38 @@ MapEntry *map_create_kv_pair(Map *map, const char *key, void *val) {
     new_map_entry->val = val;
     new_map_entry->next = NULL;
     return new_map_entry;
+}
+
+void map_set(Map *map, const char *key, void *val) {
+    size_t index = MAP_INDEX(key);
+
+    if (map->entries[index] == NULL) {
+        map->entries[index] = map_create_kv_pair(map, key, val);
+        return;
+    }
+
+    MapEntry *temp = map->entries[index];
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = map_create_kv_pair(map, key, val);
+}
+
+void *map_get(Map *map, const char *key) {
+    size_t index = MAP_INDEX(key);
+
+    if (map->entries[index] == NULL) {
+        return NULL;
+    }
+
+    MapEntry *temp = map->entries[index];
+
+    while (temp != NULL && strncmp(temp->key, key, strlen(key) != 0)) {
+        temp = temp->next;
+    }
+
+    if (temp != NULL) {
+        return temp->val;
+    }
+    return NULL;
 }

@@ -118,14 +118,14 @@ void run_test() {
 int main(int argc, char **argv) {
     GO_REBUILD_URSELF(argc, argv);
 
+    if (argc == 2 && strncmp(argv[1], "test", 4) == 0) {
+        build_test();
+        run_test();
+        return 0;
+    }
     make_dirs();
     compile_utils();
     compile_ds();
     build_server();
     build_client();
-
-    if (argc == 2 && strncmp(argv[1], "test", 4) == 0) {
-        build_test();
-        run_test();
-    }
 }

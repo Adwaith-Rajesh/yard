@@ -1,6 +1,5 @@
 #include "map.h"
 
-#include <openssl/sha.h>
 #include <string.h>
 
 #include "core/utils/check.h"
@@ -8,16 +7,22 @@
 
 Map *map_create(size_t table_size,
                 void *(*allocator)(size_t),
+                void (*deallocator)(void *),
                 void (*map_val_free_fn)(void *),
                 void (*map_entry_print_fn)(MapEntry *)) {
     CHECK_NULL_EXIT(allocator, {
         LOG_ERROR("map_create: allocator cannot be null");
     });
 
+    CHECK_NULL_EXIT(deallocator, {
+        LOG_ERROR("map_create: dellocator cannot be null");
+    });
+
     size_t _t_size = (table_size != 0) ? table_size : MAX_TABLE_SIZE;
 
     Map *new_map = allocator(sizeof(Map));
     new_map->allocator = allocator;
+    new_map->deallocator;
     new_map->map_val_free_fn = map_val_free_fn;
     new_map->map_entry_print_fn = map_entry_print_fn;
 
@@ -31,12 +36,14 @@ Map *map_create(size_t table_size,
     return new_map;
 }
 
-unsigned long long hash(const char *key) {
-    unsigned char s_hash[SHA256_DIGEST_LENGTH];
-    SHA256(key, strlen(key), s_hash);
+// implementation stolen from
+// http://www.cse.yorku.ca/~oz/hash.html
+unsigned long hash(const char *key) {
+    unsigned long hash = 5381;
+    int c;
 
-    unsigned long long i_hash = 0;
-    memcpy(&i_hash, s_hash, sizeof(unsigned long long));
+    while (c = *key++)
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
-    return i_hash;
+    return hash;
 }

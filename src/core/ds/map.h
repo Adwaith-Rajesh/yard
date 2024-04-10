@@ -14,7 +14,7 @@
 
 typedef struct _map_entry {
     // why compare strings when you can easily compare numbers
-    unsigned long long hash;
+    const char *key;
     void *val;
     struct _map_entry *next;
 } MapEntry;
@@ -25,6 +25,9 @@ typedef struct {
 
     // fn used to allocate the memory for the Map, entries, and MapEntry
     void *(*allocator)(size_t);
+
+    // fn used to deallocate memory
+    void (*deallocator)(void *);
 
     // fn that allows to free the val in map entry
     // used when a key is deleted
@@ -37,10 +40,7 @@ typedef struct {
 } Map;
 
 // returns a hash for the given key (first 64bit of SHA256)
-unsigned long long hash(const char *key);
-
-// get the index of the entry in the map
-size_t map_index(const char *key);
+unsigned long hash(const char *key);
 
 // create a Map
 // if table_size if 0 then MAX_TABLE_SIZE will be used

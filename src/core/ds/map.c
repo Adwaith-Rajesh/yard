@@ -37,7 +37,7 @@ unsigned long hash(const char *key) {
     unsigned long hash = 5381;
     int c;
 
-    while (c = *key++)
+    while ((c = *key++))
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
     return hash;
@@ -66,10 +66,17 @@ void map_set(Map *map, const char *key, void *val) {
     }
 
     MapEntry *temp = map->entries[index];
-    while (temp->next != NULL) {
+    MapEntry *prev = NULL;
+    while (temp != NULL) {
+        if (strncmp(temp->key, key, strlen(key)) == 0) {
+            map->map_val_free_fn(temp->val);
+            temp->val = val;
+            return;
+        }
+        prev = temp;
         temp = temp->next;
     }
-    temp->next = map_create_kv_pair(map, key, val);
+    prev->next = map_create_kv_pair(map, key, val);
 }
 
 void *map_get(Map *map, const char *key) {

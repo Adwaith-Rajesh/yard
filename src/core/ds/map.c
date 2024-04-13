@@ -6,7 +6,7 @@
 #include "core/utils/check.h"
 #include "core/utils/log.h"
 
-#define MAP_INDEX(key) (hash(key) % MAX_MAP_SIZE)
+#define MAP_INDEX(map, key) (hash(key) % map->_map_size)
 
 Map *map_create(size_t table_size,
                 void *(*allocator)(size_t),
@@ -20,7 +20,7 @@ Map *map_create(size_t table_size,
     new_map->deallocator = deallocator;
     new_map->map_val_free_fn = map_val_free_fn;
     new_map->map_entry_print_fn = map_entry_print_fn;
-
+    new_map->_map_size = _t_size;
     new_map->entries = allocator(sizeof(MapEntry *) * _t_size);
 
     // set all entries NULL
@@ -58,7 +58,7 @@ MapEntry *map_create_kv_pair(Map *map, const char *key, void *val) {
 }
 
 void map_set(Map *map, const char *key, void *val) {
-    size_t index = MAP_INDEX(key);
+    size_t index = MAP_INDEX(map, key);
 
     if (map->entries[index] == NULL) {
         map->entries[index] = map_create_kv_pair(map, key, val);
@@ -80,7 +80,7 @@ void map_set(Map *map, const char *key, void *val) {
 }
 
 void *map_get(Map *map, const char *key) {
-    size_t index = MAP_INDEX(key);
+    size_t index = MAP_INDEX(map, key);
 
     if (map->entries[index] == NULL) {
         return NULL;
@@ -99,7 +99,7 @@ void *map_get(Map *map, const char *key) {
 }
 
 void map_delete(Map *map, const char *key) {
-    size_t index = MAP_INDEX(key);
+    size_t index = MAP_INDEX(map, key);
 
     if (map->entries[index] == NULL) {
         return;
@@ -122,4 +122,27 @@ void map_delete(Map *map, const char *key) {
     prev->next = temp->next;
     map->map_val_free_fn(temp->val);
     map->deallocator(temp);
+}
+
+void map_free(Map *map) {
+    printf("map->entries %p\n", map->entries[0]);
+
+    for (size_t i = 0; i < map->_map_size; ++i) {
+        if (map->entries[i] == NULL) {
+            continue;
+        }
+
+        MapEntry *temp = NULL;
+        while (map->entries[i] != NULL) {
+            temp = map->entries[i];
+            map->entries[i] = map->entries[i]->next;
+            map->map_val_free_fn(temp->val);
+            map->deallocator(temp->key);
+            map->deallocator(temp);
+        }
+    }
+    map->deallocator(map->entries);
+
+    // this is the weirdest line of code i've ever written
+    map->deallocator(map);
 }

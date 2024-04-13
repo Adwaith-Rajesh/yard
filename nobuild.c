@@ -4,7 +4,7 @@
 #include "nobuild.h"
 
 #define CC "gcc"
-#define CFLAGS "-Wall", "-Wextra", "-g", "-O3", "-std=c11", "-I./src", "-lcrypto"
+#define CFLAGS "-Wall", "-Wextra", "-g", "-O3", "-std=c11", "-I./src"
 
 #define SRC_DIR "./src"
 #define TEST_DIR "./test"

@@ -37,6 +37,10 @@ typedef struct {
     // gives the entire map entry to print, not just the data
     void (*map_entry_print_fn)(MapEntry *);
 
+    // private var
+    // the size of the map table
+    size_t _map_size;
+
 } Map;
 
 // returns a hash for the given key (first 64bit of SHA256)
@@ -65,5 +69,8 @@ int map_exists(Map *map, const char *key);
 
 // call the function for each entry in the map
 void map_for_each(Map *map, void (*fn)(MapEntry *));
+
+// free the entire map
+void map_free(Map *map);
 
 #endif

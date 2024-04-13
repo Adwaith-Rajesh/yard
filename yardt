@@ -1,0 +1,128 @@
+#!/bin/env python3
+
+import argparse
+import shlex
+import sys
+from pathlib import Path
+from subprocess import Popen
+
+
+CC = 'gcc'
+CFLAGS = '-Wall -Wextra -std=c11 -I./src'
+SRC_DIR = './src'
+TEST_DIR = './test'
+BUILD_DIR = './build'
+OUT_DIR = BUILD_DIR + '/out'
+BIN_DIR = BUILD_DIR + '/bin'
+TEST_BIN_DIR = BUILD_DIR + '/test'
+
+
+# the yard server and client will be in /bin/exe
+EXE_DIR = BIN_DIR + '/exe'
+SERVER_BIN = 'yard-server'
+CLIENT_BIN = 'yard-client'
+
+_run_verbose = False
+_in_release = False
+
+############################################################
+
+
+def _run_cmd(*args: str) -> None:
+    cmd = ' '.join(str(i) for i in args)
+
+    if _run_verbose:
+        print(cmd)
+
+    p = Popen(shlex.split(cmd), shell=False)
+    p.wait()
+
+    if p.returncode != 0:
+        print(cmd, f'Exited with non zero return code [{p.returncode}]')
+        sys.exit(1)
+
+
+########## The building part ##########
+
+
+def _make_dirs():
+    Path(BUILD_DIR).mkdir(parents=True, exist_ok=True)
+    Path(BIN_DIR).mkdir(parents=True, exist_ok=True)
+    Path(OUT_DIR).mkdir(parents=True, exist_ok=True)
+    Path(TEST_BIN_DIR).mkdir(parents=True, exist_ok=True)
+    Path(EXE_DIR).mkdir(parents=True, exist_ok=True)
+
+
+def _cc() -> str:
+    return f'{CC} {CFLAGS} ' + ('-O3' if _in_release else '-O3 -g')
+
+
+def _compile_one_file(c_file: Path, force: bool = False):
+    if not force and c_file.stat().st_mtime < Path(f'{OUT_DIR}/{Path(c_file).stem}.o').stat().st_mtime:
+        return
+
+    _run_cmd(_cc(), '-c', c_file, '-o', f'{OUT_DIR}/{Path(c_file).stem}.o')
+
+
+def _build_yard_client():
+    # yard client does not depends on any of the other object files
+    _run_cmd(_cc(), f'{OUT_DIR}/yard_client.o', '-o', f'{EXE_DIR}/{CLIENT_BIN}')
+
+
+def _build_yard_server():
+    # yard server depends on all the other object files except for the yard_client.o
+    objs = ' '.join(str(i) for i in Path(OUT_DIR).rglob('*.o') if 'yard_client.o' not in str(i))
+    _run_cmd(_cc(), '-o', f'{EXE_DIR}/{SERVER_BIN}', objs)
+
+
+def _build_yard(with_exe: bool, force: bool = False) -> None:
+    for c_file in Path(SRC_DIR).rglob('*.c'):
+        _compile_one_file(c_file, force)
+
+    if with_exe:
+        _build_yard_client()
+        _build_yard_server()
+
+
+def _clean():
+    _run_cmd('rm -rf', BUILD_DIR)
+
+
+############################################################
+
+
+def main() -> int:
+    global _run_verbose
+    global _in_release
+    global CC
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-cc', default=CC, help='Change the compiler', type=str)
+    parser.add_argument('-v', '--verbose', action='store_true', help='Run verbose')
+
+    sub = parser.add_subparsers(dest='sub')
+
+    build = sub.add_parser('build', add_help=False)
+    build.add_argument('-r', '--release', action='store_true', help='Build YARD in release mode')
+    build.add_argument('-we', '--with-exe', action='store_true', help='Also build the exe')
+    build.add_argument('-f', '--force', action='store_true', help='Force build all files (ignore mtime)')
+
+    clean = sub.add_parser('clean', help='Remove the build directory', add_help=False)
+
+    args = parser.parse_args()
+
+    _run_verbose = args.verbose
+    _in_release = args.release
+    CC = args.cc
+
+    if args.sub == 'build':
+        _make_dirs()
+        _build_yard(args.with_exe, args.force)
+
+    if args.sub == 'clean':
+        _clean()
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

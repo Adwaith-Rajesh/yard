@@ -88,7 +88,7 @@ void *map_get(Map *map, const char *key) {
 
     MapEntry *temp = map->entries[index];
 
-    while (temp != NULL && strncmp(temp->key, key, strlen(key) != 0)) {
+    while (temp != NULL && strncmp(temp->key, key, strlen(key)) != 0) {
         temp = temp->next;
     }
 

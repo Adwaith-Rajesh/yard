@@ -13,6 +13,9 @@ typedef enum {
 } container_t;
 
 typedef struct {
+    void *(*allocator)(size_t);
+    void (*deallocator)(void *);
+
     container_t type;
     union {
         char *_str;
@@ -21,13 +24,13 @@ typedef struct {
     } data;
 } Container;
 
-Container *create_int_container(int data, void *(allocator)(size_t));
+Container *create_int_container(int data, void *(allocator)(size_t), void (*deallocator)(void *));
 
-Container *create_float_container(float data, void *(allocator)(size_t));
+Container *create_float_container(float data, void *(allocator)(size_t), void (*deallocator)(void *));
 
-Container *create_str_container(const char *data, void *(allocator)(size_t));
+Container *create_str_container(const char *data, void *(allocator)(size_t), void (*deallocator)(void *));
 
-void container_free(Container *container, void (*deallocator)(void *));
+void container_free(Container *container);
 
 void container_print(Container *container);
 

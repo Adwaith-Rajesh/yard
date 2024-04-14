@@ -7,22 +7,28 @@
 
 #include "core/utils/log.h"
 
-Container *create_int_container(int data, void *(allocator)(size_t)) {
+Container *create_int_container(int data, void *(allocator)(size_t), void (*deallocator)(void *)) {
     Container *new_container = allocator(sizeof(Container));
+    new_container->allocator = allocator;
+    new_container->deallocator = deallocator;
     new_container->type = INT;
     new_container->data._int = data;
     return new_container;
 }
 
-Container *create_float_container(float data, void *(allocator)(size_t)) {
+Container *create_float_container(float data, void *(allocator)(size_t), void (*deallocator)(void *)) {
     Container *new_container = allocator(sizeof(Container));
+    new_container->allocator = allocator;
+    new_container->deallocator = deallocator;
     new_container->type = FLOAT;
     new_container->data._float = data;
     return new_container;
 }
 
-Container *create_str_container(const char *data, void *(allocator)(size_t)) {
+Container *create_str_container(const char *data, void *(allocator)(size_t), void (*deallocator)(void *)) {
     Container *new_container = allocator(sizeof(Container));
+    new_container->allocator = allocator;
+    new_container->deallocator = deallocator;
     new_container->type = STR;
     size_t data_len = strlen(data);
     new_container->data._str = allocator(data_len + 1);
@@ -31,16 +37,16 @@ Container *create_str_container(const char *data, void *(allocator)(size_t)) {
     return new_container;
 }
 
-void container_free(Container *container, void (*deallocator)(void *)) {
+void container_free(Container *container) {
     if (container == NULL) {
         return;
     }
 
     if (container->type == STR) {
-        deallocator(container->data._str);
+        container->deallocator(container->data._str);
     }
 
-    deallocator(container);
+    container->deallocator(container);
 }
 
 void container_print(Container *container) {

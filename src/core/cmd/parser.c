@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 
 #include "core/ds/dc.h"
 #include "core/ds/list.h"
@@ -87,6 +88,8 @@ void parse_cmd(ParserCtx *pctx, const char *cmd) {
 
     size_t cmd_len = strlen(cmd);
     char *cmd_cpy = pctx->allocator(cmd_len + 1);
+    bzero(cmd_cpy, cmd_len + 1);
+
     strncpy(cmd_cpy, cmd, cmd_len);
 
     // will be set to 1 if a " is encountered and 0 if another " is encountered

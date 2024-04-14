@@ -58,8 +58,12 @@ def _cc() -> str:
 
 
 def _compile_one_file(c_file: Path, force: bool = False):
-    if not force and c_file.stat().st_mtime < Path(f'{OUT_DIR}/{Path(c_file).stem}.o').stat().st_mtime:
-        return
+    try:
+        if not force and c_file.stat().st_mtime < Path(f'{OUT_DIR}/{Path(c_file).stem}.o').stat().st_mtime:
+            return
+    except FileNotFoundError:
+        # if the file does not exists the build
+        pass
 
     _run_cmd(_cc(), '-c', c_file, '-o', f'{OUT_DIR}/{Path(c_file).stem}.o')
 

@@ -35,6 +35,9 @@ List *list_init(void *(*allocator)(size_t), void (*deallocator)(void *), void (*
 // free the entire list
 void list_free(List *list);
 
+// delete all the nodes from the list
+void list_truncate(List *list);
+
 // print the entire list
 void list_print(List *list);
 

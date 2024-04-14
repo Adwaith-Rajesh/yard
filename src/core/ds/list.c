@@ -50,6 +50,20 @@ void list_free(List *list) {
     list->deallocator(list);
 }
 
+void list_truncate(List *list) {
+    if (list == NULL) {
+        return;
+    }
+
+    ListNode *temp;
+    while (list->head != NULL) {
+        temp = list->head;
+        list->head = list->head->next;
+        node_free(list, temp);
+    }
+    list->head = NULL;
+}
+
 void node_print(List *list, ListNode *node) {
     if (list->node_print_fn == NULL) {
         printf("Node(%p){data = %p, next = %p}\n", node, node->data, node->next);

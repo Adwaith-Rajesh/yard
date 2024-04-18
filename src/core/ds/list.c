@@ -1,6 +1,8 @@
 #include "core/ds/list.h"
 
 #include "core/utils/check.h"
+
+#define LOG_IMPLEMENTATION
 #include "core/utils/log.h"
 
 ListNode *node_init(List *list, void *data) {

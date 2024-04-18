@@ -4,7 +4,6 @@
 #include <strings.h>
 
 #include "core/utils/check.h"
-#include "core/utils/log.h"
 
 #define MAP_INDEX(map, key) (hash(key) % map->_map_size)
 
@@ -125,8 +124,6 @@ void map_delete(Map *map, const char *key) {
 }
 
 void map_free(Map *map) {
-    printf("map->entries %p\n", map->entries[0]);
-
     for (size_t i = 0; i < map->_map_size; ++i) {
         if (map->entries[i] == NULL) {
             continue;

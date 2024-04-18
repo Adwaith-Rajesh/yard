@@ -106,12 +106,12 @@ def main() -> int:
 
     sub = parser.add_subparsers(dest='sub')
 
-    build = sub.add_parser('build', add_help=False)
+    build = sub.add_parser('build')
     build.add_argument('-r', '--release', action='store_true', help='Build YARD in release mode')
     build.add_argument('-we', '--with-exe', action='store_true', help='Also build the exe')
     build.add_argument('-f', '--force', action='store_true', help='Force build all files (ignore mtime)')
 
-    clean = sub.add_parser('clean', help='Remove the build directory', add_help=False)
+    clean = sub.add_parser('clean', help='Remove the build directory')
 
     args = parser.parse_args()
 

@@ -81,6 +81,8 @@ def _build_yard_server():
 
 def _build_yard(with_exe: bool, force: bool = False) -> None:
     for c_file in Path(SRC_DIR).rglob('*.c'):
+        if c_file.name.startswith('_'):
+            continue
         _compile_one_file(c_file, force)
 
     if with_exe:

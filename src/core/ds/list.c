@@ -5,6 +5,9 @@
 #define LOG_IMPLEMENTATION
 #include "core/utils/log.h"
 
+#define INC_SIZE(LIST) ((LIST)->size)++
+#define DEC_SIZE(LIST) ((LIST)->size)--
+
 ListNode *node_init(List *list, void *data) {
     ListNode *new_node = list->allocator(sizeof(ListNode));
     new_node->data = data;
@@ -22,6 +25,7 @@ List *list_init(void *(*allocator)(size_t), void (*deallocator)(void *), void (*
     new_list->deallocator = deallocator;
     new_list->node_data_free_fn = node_data_free_fn;
     new_list->node_print_fn = node_print_fn;
+    new_list->size = 0;
     new_list->head = NULL;
     return new_list;
 }
@@ -63,6 +67,7 @@ void list_truncate(List *list) {
         list->head = list->head->next;
         node_free(list, temp);
     }
+    list->size = 0;
     list->head = NULL;
 }
 
@@ -85,6 +90,7 @@ void list_print(List *list) {
 List *list_pushr(List *list, void *data) {
     if (list->head == NULL) {
         list->head = node_init(list, data);
+        INC_SIZE(list);
         return list;
     }
 
@@ -93,6 +99,7 @@ List *list_pushr(List *list, void *data) {
         temp = temp->next;
     }
     temp->next = node_init(list, data);
+    INC_SIZE(list);
     return list;
 }
 
@@ -100,6 +107,7 @@ List *list_pushl(List *list, void *data) {
     ListNode *new_node = node_init(list, data);
     new_node->next = list->head;
     list->head = new_node;
+    INC_SIZE(list);
     return list;
 }
 
@@ -118,6 +126,7 @@ void *list_popr(List *list) {
     prev->next = NULL;
     void *data = temp->data;
     list->deallocator(temp);
+    DEC_SIZE(list);
     return data;
 }
 
@@ -130,6 +139,7 @@ void *list_popl(List *list) {
     list->head = list->head->next;
     void *data = temp->data;
     list->deallocator(temp);
+    DEC_SIZE(list);
     return data;
 }
 
@@ -144,6 +154,7 @@ List *list_delete(List *list, int (*match)(ListNode *)) {
         temp = list->head;
         list->head = list->head->next;
         node_free(list, temp);
+        DEC_SIZE(list);
     }
 
     if (list->head == NULL) {
@@ -159,6 +170,7 @@ List *list_delete(List *list, int (*match)(ListNode *)) {
             prev->next = curr->next;
             curr = curr->next;
             node_free(list, temp);
+            DEC_SIZE(list);
         }
     }
 

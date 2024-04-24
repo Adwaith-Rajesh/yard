@@ -14,6 +14,7 @@ typedef struct {
     void (*deallocator)(void *);        // maybe one day we can implement an arena allocator
     void (*node_data_free_fn)(void *);  // a function used to free the node data
     void (*node_print_fn)(ListNode *);  // a function used to print the node data
+    size_t size;                        // the length of the list
 } List;
 
 // Node

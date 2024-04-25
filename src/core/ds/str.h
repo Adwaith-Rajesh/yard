@@ -18,13 +18,16 @@ typedef struct {
 Str *str_create(void *(*allocator)(size_t), void (*deallocator)(void *), void *(*reallocator)(void *, size_t));
 
 // create a string from char *
-Str *str_conv_charp(Str *str, const char *p);
+Str *str_append_charp(Str *str, const char *p);
 
 // add a character to the given string
-Str *str_append_charp(Str *str, const char c);
+Str *str_append_char(Str *str, const char c);
 
 // print a given Str
 void str_print(Str *str);
+
+// get the length of the string
+size_t str_len(Str *str);
 
 // free the string
 void str_free(Str *str);

@@ -30,7 +30,11 @@ void str_print(Str *str) {
     printf("%s", str->str);
 }
 
-Str *str_append_charp(Str *str, const char c) {
+size_t str_len(Str *str) {
+    return str->len;
+}
+
+Str *str_append_char(Str *str, const char c) {
     // printf("str_len %zu\n", str->len);
     if (str->len == (str->_size - 1)) {
         // printf("in if\n");
@@ -45,4 +49,13 @@ Str *str_append_charp(Str *str, const char c) {
     };
 
     str->str[str->len++] = c;
+    return str;
+}
+
+Str *str_append_charp(Str *str, const char *p) {
+    int c;
+    while ((c = *p++) != '\0') {
+        str_append_char(str, c);
+    }
+    return str;
 }

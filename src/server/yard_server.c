@@ -47,7 +47,7 @@ void launch(struct Server *server) {
     }
 }
 
-int main() {
+int server() {
     signal(SIGINT, handle_sigint);
 
     struct Server server = server_init(

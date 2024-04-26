@@ -15,7 +15,7 @@ ListNode *node_init(List *list, void *data) {
     return new_node;
 }
 
-List *list_init(void *(*allocator)(size_t), void (*deallocator)(void *), void (*node_data_free_fn)(void *), void (*node_print_fn)(ListNode *)) {
+List *list_create(void *(*allocator)(size_t), void (*deallocator)(void *), void (*node_data_free_fn)(void *), void (*node_print_fn)(ListNode *)) {
     if (node_data_free_fn == NULL) {
         LOG_WARN("list_init: node_data_free_fn is NULL");
     }

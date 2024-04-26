@@ -73,7 +73,7 @@ ParserCtx *parser_init(void *(*allocator)(size_t), void (*deallocator)(void *)) 
     new_pctx->deallocator = deallocator;
 
     // initialize the cmd list
-    List *cmd_list = list_init(allocator, deallocator, _list_container_free, _list_container_print);
+    List *cmd_list = list_create(allocator, deallocator, _list_container_free, _list_container_print);
     new_pctx->cmd = cmd_list;
     return new_pctx;
 }

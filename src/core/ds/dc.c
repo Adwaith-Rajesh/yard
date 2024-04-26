@@ -37,6 +37,15 @@ Container *create_str_container(const char *data, void *(allocator)(size_t), voi
     return new_container;
 }
 
+Container *create_cmd_fn_container(CmdFnType fn, void *(allocator)(size_t), void (*deallocator)(void *)) {
+    Container *new_container = allocator(sizeof(Container));
+    new_container->allocator = allocator;
+    new_container->deallocator = deallocator;
+    new_container->type = CMD_FN_PTR;
+    new_container->data._fn = fn;
+    return new_container;
+}
+
 void container_free(Container *container) {
     if (container == NULL) {
         return;
@@ -50,22 +59,18 @@ void container_free(Container *container) {
 }
 
 void container_print(Container *container) {
-    if (container == NULL) {
-        return;
-    }
-
-    if (container->type == INT) {
-        printf("Container{container_t = INT, data = %d}\n", container->data._int);
-        return;
-    }
-
-    if (container->type == FLOAT) {
-        printf("Container{container_t = FLOAT, data = %f}\n", container->data._float);
-        return;
-    }
-
-    if (container->type == STR) {
-        printf("Container{container_t = STR, data = %s}\n", container->data._str);
-        return;
+    switch (container->type) {
+        case INT:
+            printf("Container{container_t = INT, data = %d}\n", container->data._int);
+            return;
+        case FLOAT:
+            printf("Container{container_t = FLOAT, data = %f}\n", container->data._float);
+            return;
+        case STR:
+            printf("Container{container_t = STR, data = %s}\n", container->data._str);
+            return;
+        case CMD_FN_PTR:
+            printf("Container{container_t = CMD_FN_PTR, data = %p}\n", container->data._fn);
+            return;
     }
 }

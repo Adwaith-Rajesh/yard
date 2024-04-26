@@ -143,3 +143,35 @@ void map_free(Map *map) {
     // this is the weirdest line of code i've ever written
     map->deallocator(map);
 }
+
+int map_exists(Map *map, const char *key) {
+    size_t i = MAP_INDEX(map, key);
+    if (map->entries[i] == NULL) {
+        return 0;
+    }
+
+    MapEntry *temp = map->entries[i];
+    size_t key_len = strlen(key);
+    while (temp != NULL) {
+        if (strncmp(temp->key, key, key_len) == 0) {
+            return 1;
+        }
+        temp = temp->next;
+    }
+
+    return 0;
+}
+
+void map_for_each(Map *map, void (*fn)(MapEntry *)) {
+    for (size_t i = 0; i < map->_map_size; ++i) {
+        if (map->entries[i] == NULL) {
+            continue;
+        }
+
+        MapEntry *temp = map->entries[i];
+        while (temp != NULL) {
+            fn(temp);
+            temp = temp->next;
+        }
+    }
+}

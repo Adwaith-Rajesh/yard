@@ -32,4 +32,7 @@ size_t str_len(Str *str);
 // free the string
 void str_free(Str *str);
 
+// clear the string
+Str *str_clear(Str *Str);
+
 #endif

@@ -7,8 +7,8 @@ Str *str_create(void *(*allocator)(size_t),
                 void (*deallocator)(void *),
                 void *(*reallocator)(void *, size_t)) {
     Str *new_str = allocator(sizeof(Str));
-    new_str->str = allocator(sizeof(char) * 2);
-    new_str->_size = 2;
+    new_str->str = allocator(sizeof(char) * 16);
+    new_str->_size = 16;
     new_str->len = 0;
 
     // init the string
@@ -35,9 +35,7 @@ size_t str_len(Str *str) {
 }
 
 Str *str_append_char(Str *str, const char c) {
-    // printf("str_len %zu\n", str->len);
     if (str->len == (str->_size - 1)) {
-        // printf("in if\n");
         str->str = str->reallocator(str->str, str->_size * 2);
 
         size_t size_prev = str->_size;
@@ -57,5 +55,11 @@ Str *str_append_charp(Str *str, const char *p) {
     while ((c = *p++) != '\0') {
         str_append_char(str, c);
     }
+    return str;
+}
+
+Str *str_clear(Str *str) {
+    bzero(str->str, str->_size);
+    str->len = 0;
     return str;
 }

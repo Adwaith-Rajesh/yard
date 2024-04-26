@@ -6,6 +6,8 @@
 #include "core/ds/list.h"
 #include "core/ds/map.h"
 
+// function used by macros to create ds from mctx
+
 void _container_print_list(ListNode *node) {
     if (node == NULL) {
         return;
@@ -26,6 +28,10 @@ void _container_free(void *data) {
     }
     container_free((Container *)data);
 }
+
+//  end
+
+// for custom map that are not created using MACROS
 
 static void _free_list_from_map(void *data) {
     if (data == NULL) {

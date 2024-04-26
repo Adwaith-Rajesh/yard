@@ -19,8 +19,7 @@ TEST_BIN_DIR = BUILD_DIR + '/test'
 
 # the yard server and client will be in /bin/exe
 EXE_DIR = BIN_DIR + '/exe'
-SERVER_BIN = 'yard-server'
-CLIENT_BIN = 'yard-client'
+YARD_BIN = 'yard'
 
 _run_verbose = False
 _in_release = False
@@ -68,15 +67,10 @@ def _compile_one_file(c_file: Path, force: bool = False):
     _run_cmd(_cc(), '-c', c_file, '-o', f'{OUT_DIR}/{Path(c_file).stem}.o')
 
 
-def _build_yard_client():
-    # yard client does not depends on any of the other object files
-    _run_cmd(_cc(), f'{OUT_DIR}/yard_client.o', '-o', f'{EXE_DIR}/{CLIENT_BIN}')
-
-
-def _build_yard_server():
+def _build_yard_exe():
     # yard server depends on all the other object files except for the yard_client.o
-    objs = ' '.join(str(i) for i in Path(OUT_DIR).rglob('*.o') if 'yard_client.o' not in str(i))
-    _run_cmd(_cc(), '-o', f'{EXE_DIR}/{SERVER_BIN}', objs)
+    objs = ' '.join(str(i) for i in Path(OUT_DIR).rglob('*.o'))
+    _run_cmd(_cc(), '-o', f'{EXE_DIR}/{YARD_BIN}', objs)
 
 
 def _build_yard(with_exe: bool, force: bool = False) -> None:
@@ -86,8 +80,7 @@ def _build_yard(with_exe: bool, force: bool = False) -> None:
         _compile_one_file(c_file, force)
 
     if with_exe:
-        _build_yard_client()
-        _build_yard_server()
+        _build_yard_exe()
 
 
 def _clean():
@@ -118,7 +111,7 @@ def main() -> int:
     args = parser.parse_args()
 
     _run_verbose = args.verbose
-    _in_release = args.release
+    _in_release = args.release if 'release' in args else False
     CC = args.cc
 
     if args.sub == 'build':

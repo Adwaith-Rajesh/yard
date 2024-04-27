@@ -73,4 +73,10 @@ YardMasterCtx *mctx_create(void *(*allocator)(size_t), void (*deallocator)(void 
 // free the master context
 void mctx_free(YardMasterCtx *mctx);
 
+// create result
+CmdResult *result_create(YardMasterCtx *mctx);
+
+// free result
+void result_free(CmdResult *res, YardMasterCtx *mctx);
+
 #endif

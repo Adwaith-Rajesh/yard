@@ -5,6 +5,7 @@
 #include "core/cmd/cmds.h"
 #include "core/ds/list.h"
 #include "core/ds/map.h"
+#include "core/ds/str.h"
 
 // function used by macros to create ds from mctx
 
@@ -49,8 +50,8 @@ static void _free_map_from_map(void *data) {
 
 // register all the command
 void register_commands(YardMasterCtx *mctx) {
-    map_set(mctx->_commands, "get", CMD_DC_FROM_MCTX(mctx, get));
-    map_set(mctx->_commands, "set", CMD_DC_FROM_MCTX(mctx, set));
+    map_set(mctx->_commands, "get", CMD_DC_FROM_MCTX(mctx, get_wrap));
+    map_set(mctx->_commands, "set", CMD_DC_FROM_MCTX(mctx, set_wrap));
 }
 
 YardMasterCtx *mctx_create(void *(*allocator)(size_t), void (*deallocator)(void *), void *(*reallocator)(void *, size_t)) {
@@ -68,6 +69,8 @@ YardMasterCtx *mctx_create(void *(*allocator)(size_t), void (*deallocator)(void 
     new_mctx->_user_list = map_create(0, allocator, deallocator, _free_list_from_map, NULL);
     new_mctx->_user_maps = map_create(0, allocator, deallocator, _free_map_from_map, NULL);
 
+    new_mctx->_e_string = STR_FROM_MCTX(new_mctx);
+
     register_commands(new_mctx);
 
     return new_mctx;
@@ -79,6 +82,7 @@ void mctx_free(YardMasterCtx *mctx) {
     list_free(mctx->_default_list);
     map_free(mctx->_user_list);
     map_free(mctx->_commands);
+    str_free(mctx->_e_string);
 
     mctx->deallocator(mctx);
 }

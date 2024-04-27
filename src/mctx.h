@@ -3,6 +3,7 @@
 
 #include "core/ds/list.h"
 #include "core/ds/map.h"
+#include "core/ds/str.h"
 
 // stores all the maps, sets and list created dusting a session
 typedef struct {
@@ -31,6 +32,10 @@ typedef struct {
     // pushlz list_name val
     // popr list_name
     Map *_user_list;  // Map[str, List]
+
+    // used to store error messages or help messages
+    // or anything like that
+    Str *_e_string;
 
 } YardMasterCtx;
 

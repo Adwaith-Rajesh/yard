@@ -16,7 +16,7 @@ typedef enum {
     CMD_FN_PTR
 } container_t;
 
-typedef int (*CmdFnType)(YardMasterCtx *, ParserCtx *);
+typedef int (*CmdFnType)(YardMasterCtx *, ParserCtx *, CmdResult *);
 
 typedef struct {
     void *(*allocator)(size_t);

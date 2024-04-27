@@ -74,6 +74,16 @@ YardMasterCtx *mctx_create(void *(*allocator)(size_t), void (*deallocator)(void 
     return new_mctx;
 }
 
+CmdResult *result_create(YardMasterCtx *mctx) {
+    CmdResult *res = mctx->allocator(sizeof(CmdResult));
+    res->result_type = R_ERROR;
+    res->emsg = STR_FROM_MCTX(mctx);
+    res->_str = STR_FROM_MCTX(mctx);
+    res->_int = 0;
+    res->_float = 0.0;
+    return res;
+}
+
 void mctx_free(YardMasterCtx *mctx) {
     map_free(mctx->_default_map);
     map_free(mctx->_user_maps);
@@ -82,4 +92,10 @@ void mctx_free(YardMasterCtx *mctx) {
     map_free(mctx->_commands);
 
     mctx->deallocator(mctx);
+}
+
+void result_free(CmdResult *res, YardMasterCtx *mctx) {
+    str_free(res->emsg);
+    str_free(res->_str);
+    mctx->deallocator(res);
 }

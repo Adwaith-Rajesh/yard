@@ -25,6 +25,32 @@
     "OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n"  \
     "OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n\n"
 
+typedef enum {
+    R_ERROR = 0,
+    R_INT,
+    R_FLOAT,
+    R_STR,
+    R_HELP
+} result_t;
+
+// store the result of a command
+typedef struct {
+    // 1 on success, 0 on error
+    int ok;
+
+    // type
+    result_t result_type;
+
+    // used to store error messages or help messages
+    // or anything like that
+    Str *emsg;
+
+    // all the types that we support rn
+    Str *_str;     // store the string result
+    int _int;      // store the int result
+    float _float;  // store the float result
+} CmdResult;
+
 // macros that uses the allocators in mctx to create the DS's
 
 void _container_print_list(ListNode *node);

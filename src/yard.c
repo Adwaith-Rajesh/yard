@@ -69,8 +69,6 @@ YardMasterCtx *mctx_create(void *(*allocator)(size_t), void (*deallocator)(void 
     new_mctx->_user_list = map_create(0, allocator, deallocator, _free_list_from_map, NULL);
     new_mctx->_user_maps = map_create(0, allocator, deallocator, _free_map_from_map, NULL);
 
-    new_mctx->_e_string = STR_FROM_MCTX(new_mctx);
-
     register_commands(new_mctx);
 
     return new_mctx;
@@ -82,7 +80,6 @@ void mctx_free(YardMasterCtx *mctx) {
     list_free(mctx->_default_list);
     map_free(mctx->_user_list);
     map_free(mctx->_commands);
-    str_free(mctx->_e_string);
 
     mctx->deallocator(mctx);
 }

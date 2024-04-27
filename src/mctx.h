@@ -32,11 +32,34 @@ typedef struct {
     // pushlz list_name val
     // popr list_name
     Map *_user_list;  // Map[str, List]
+} YardMasterCtx;
+
+typedef enum {
+    ERROR = 0,
+    INT,
+    FLOAT,
+    STR,
+    HELP
+} result_t;
+
+// store the result of a command
+typedef struct {
+    // 1 on success, 0 on error
+    int ok;
+
+    // type
+    result_t _result_type;
 
     // used to store error messages or help messages
     // or anything like that
-    Str *_e_string;
+    Str *_emsg;
 
-} YardMasterCtx;
+    // all the types that we support rn
+    union {
+        Str *_str;
+        int _int;
+        float _float;
+    } _value;
+} CmdResult;
 
 #endif

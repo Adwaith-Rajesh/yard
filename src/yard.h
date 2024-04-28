@@ -31,16 +31,6 @@ void _container_print_list(ListNode *node);
 void _container_print_map(MapEntry *entry);
 void _container_free(void *data);
 
-#define LIST_FROM_MCTX(MCTX) list_create((MCTX)->allocator, (MCTX)->deallocator, _container_free, _container_print_list)
-#define MAP_FROM_MCTX(MCTX) map_create(0, (MCTX)->allocator, (MCTX)->deallocator, _container_free, _container_print_map)
-#define STR_FROM_MCTX(MCTX) str_create((MCTX)->allocator, (MCTX)->deallocator, (MCTX)->reallocator)
-
-// container section
-#define INT_DC_FROM_MCTX(MCTX, I) create_int_container(I, (MCTX)->allocator, (MCTX)->deallocator)
-#define FLOAT_DC_FROM_MCTX(MCTX, I) create_float_container(I, (MCTX)->allocator, (MCTX)->deallocator)
-#define STR_DC_FROM_MCTX(MCTX, I) create_str_container(I, (MCTX)->allocator, (MCTX)->deallocator)
-#define CMD_DC_FROM_MCTX(MCTX, I) create_cmd_fn_container(I, (MCTX)->allocator, (MCTX)->deallocator)
-
 // create the master context
 YardMasterCtx *mctx_create(void *(*allocator)(size_t), void (*deallocator)(void *), void *(*reallocator)(void *, size_t));
 

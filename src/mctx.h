@@ -36,6 +36,8 @@ typedef struct {
 
 typedef enum {
     R_ERROR = 0,
+    R_NONE,
+    R_MSG,
     R_INT,
     R_FLOAT,
     R_STR,
@@ -44,9 +46,6 @@ typedef enum {
 
 // store the result of a command
 typedef struct {
-    // 1 on success, 0 on error
-    int ok;
-
     // type
     result_t result_type;
 
@@ -59,5 +58,15 @@ typedef struct {
     int _int;      // store the int result
     float _float;  // store the float result
 } CmdResult;
+
+#define LIST_FROM_MCTX(MCTX) list_create((MCTX)->allocator, (MCTX)->deallocator, _container_free, _container_print_list)
+#define MAP_FROM_MCTX(MCTX) map_create(0, (MCTX)->allocator, (MCTX)->deallocator, _container_free, _container_print_map)
+#define STR_FROM_MCTX(MCTX) str_create((MCTX)->allocator, (MCTX)->deallocator, (MCTX)->reallocator)
+
+// container section
+#define INT_DC_FROM_MCTX(MCTX, I) create_int_container(I, (MCTX)->allocator, (MCTX)->deallocator)
+#define FLOAT_DC_FROM_MCTX(MCTX, I) create_float_container(I, (MCTX)->allocator, (MCTX)->deallocator)
+#define STR_DC_FROM_MCTX(MCTX, I) create_str_container(I, (MCTX)->allocator, (MCTX)->deallocator)
+#define CMD_DC_FROM_MCTX(MCTX, I) create_cmd_fn_container(I, (MCTX)->allocator, (MCTX)->deallocator)
 
 #endif

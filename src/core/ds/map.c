@@ -106,14 +106,20 @@ void map_delete(Map *map, const char *key) {
 
     MapEntry *temp = map->entries[index];
     MapEntry *prev = NULL;
-    while (temp != NULL && strncmp(temp->key, key, strlen(key))) {
+    while (temp != NULL && strncmp(temp->key, key, strlen(key)) != 0) {
         temp = temp->next;
+        prev = temp;
+    }
+
+    if (temp == NULL) {
+        return;
     }
 
     // first node
     if (prev == NULL) {
         map->entries[index] = map->entries[index]->next;
         map->map_val_free_fn(temp->val);
+        map->deallocator(temp->key);
         map->deallocator(temp);
         return;
     }

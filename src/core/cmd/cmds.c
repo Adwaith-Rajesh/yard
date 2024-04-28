@@ -121,6 +121,17 @@ CMD_WRAP(del) {
 
 #define GET_HELP_CALL(CMD) (((Container *)map_get(MCTX->_commands, CMD))->data._fn)(NULL, NULL, res)
 
+static void _get_all_cmds(MapEntry *entry, void *arg) {
+    if (entry == NULL) {
+        return;
+    }
+
+    CmdResult *res = arg;
+    str_append_char(res->emsg, '\t');
+    str_append_charp(res->emsg, entry->key);
+    str_append_char(res->emsg, '\n');
+}
+
 DEFINE_CMD(help) {
     size_t arg_count = GET_ARG_COUNT();
 
@@ -130,8 +141,9 @@ DEFINE_CMD(help) {
     }
 
     if (arg_count == 0) {
-        // TODO: display all the available commands
-        SET_ERROR("not implemented");
+        RES->result_type = R_HELP;
+        str_append_charp(RES->emsg, "Available commands:\n");
+        map_for_each(MCTX->_commands, _get_all_cmds, RES);
         return;
     }
 

@@ -65,15 +65,16 @@ void print_result(CmdResult *res) {
 
         case R_STR:
             str_print(res->_str);
-            printf("\n");
             break;
 
         case R_INT:
-            printf("%d\n", res->_int);
+            printf("%d", res->_int);
             break;
 
         case R_FLOAT:
-            printf("%f\n", res->_float);
+            printf("%f", res->_float);
+            break;
+        default:
             break;
     }
     str_clear(res->emsg);

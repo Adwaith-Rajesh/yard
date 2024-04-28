@@ -5,12 +5,6 @@
 #include "core/cmd/parser.h"
 #include "mctx.h"
 
-static Container *get_next_arg(ListNode *node) {
-    node = node->next;
-    Container *data = node->data;
-    return data;
-}
-
 static void gen_result(Container *val, CmdResult *res) {
     switch (val->type) {
         case STR:
@@ -32,6 +26,8 @@ static void gen_result(Container *val, CmdResult *res) {
 
 // static void CMD(YardMasterCtx *mctx, ParserCtx *pctx, )
 
+// get keyname
+
 DEFINE_CMD(get) {
     INIT_ARGS(ARG(keyname));
     Container *val = map_get(MCTX->_default_map, keyname->data._str);
@@ -44,23 +40,15 @@ DEFINE_CMD(get) {
     gen_result(val, RES);
 }
 
-DEFINE_CMD(set) {
-    INIT_ARGS(ARG(keyname); ARG(val));
-    map_set(MCTX->_default_map, keyname->data._str, container_clone(val));
-    SET_RESULT_MSG("Done\n");
-}
-
-// wrappers the contains extra info about the commands
-
 CMD_WRAP(get) {
-    CHECK_HELP("Usage: get keyname\n");
+    CHECK_HELP("Usage: get keyname");
     ENFORCE_ARG_COUNT(1, {
-        SET_ERROR("Please provide key name\n");
+        SET_ERROR("del required 1 argument, key");
         return;
     });
     ENFORCE_ARG_TYPE({
         TYPE_OF(1, STR, {
-            SET_ERROR("keyname must be a string\n");
+            SET_ERROR("keyname must be a string");
             return;
         });
     });
@@ -68,18 +56,59 @@ CMD_WRAP(get) {
     EXE_CMD(get);
 }
 
+// end get
+
+// set keyname value
+
+DEFINE_CMD(set) {
+    INIT_ARGS(ARG(keyname); ARG(val));
+    map_set(MCTX->_default_map, keyname->data._str, container_clone(val));
+    SET_RESULT_MSG("Done");
+}
+
 CMD_WRAP(set) {
-    CHECK_HELP("Usage: set keyname value\n");
+    CHECK_HELP("Usage: set keyname value");
     ENFORCE_ARG_COUNT(2, {
-        SET_ERROR("set requires 2 arguments\n");
+        SET_ERROR("set requires 2 arguments, key and val");
     });
 
     ENFORCE_ARG_TYPE({
         TYPE_OF(1, STR, {
-            SET_ERROR("keyname must be a string\n");
+            SET_ERROR("key must be a string");
             return;
         });
     });
 
     EXE_CMD(set);
+}
+
+// end set
+
+// del keyname
+
+DEFINE_CMD(del) {
+    INIT_ARGS(ARG(keyname););
+
+    if (map_exists(MCTX->_default_map, keyname->data._str) == 0) {
+        SET_ERROR("key does not exist");
+        return;
+    }
+
+    map_delete(MCTX->_default_map, keyname->data._str);
+    SET_RESULT_MSG("Done");
+}
+
+CMD_WRAP(del) {
+    CHECK_HELP("Usage: del keyname");
+    ENFORCE_ARG_COUNT(1, {
+        SET_ERROR("del requires 1 argument, key");
+    });
+    ENFORCE_ARG_TYPE({
+        TYPE_OF(1, STR, {
+            SET_ERROR("key must be a string");
+            return;
+        });
+    });
+
+    EXE_CMD(del);
 }

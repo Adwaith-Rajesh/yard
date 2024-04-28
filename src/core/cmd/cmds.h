@@ -23,6 +23,7 @@
             res->result_type = R_HELP;          \
             str_clear(res->emsg);               \
             str_append_charp(res->emsg, H_MSG); \
+            return;                             \
         }                                       \
     } while (0)
 
@@ -63,7 +64,7 @@
 
 #define ARG(ARG_NAME)  \
     head = head->next; \
-    Container *ARG_NAME = head->data;
+    Container *ARG_NAME = head->data
 
 #define EXE_CMD(CMD) CMD(mctx, pctx, res)
 

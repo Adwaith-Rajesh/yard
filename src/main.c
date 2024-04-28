@@ -7,7 +7,6 @@
 #include "yard.h"
 
 #define SET_ERROR_MSG(MSG)      \
-    res->ok = 0;                \
     res->result_type = R_ERROR; \
     str_append_charp(res->emsg, MSG)
 
@@ -53,6 +52,33 @@ void call_cmd(YardMasterCtx *mctx, ParserCtx *pctx, CmdResult *res) {
     _exec_cmd(mctx, pctx, res, first_node->data._str);
 }
 
+void print_result(CmdResult *res) {
+    switch (res->result_type) {
+        case R_ERROR:
+            printf("ERROR: ");
+            str_print(res->emsg);
+            break;
+
+        case R_MSG:
+            str_print(res->emsg);
+            break;
+
+        case R_STR:
+            str_print(res->_str);
+            printf("\n");
+            break;
+
+        case R_INT:
+            printf("%d\n", res->_int);
+            break;
+
+        case R_FLOAT:
+            printf("%f\n", res->_float);
+            break;
+    }
+    str_clear(res->emsg);
+}
+
 int main() {
     printf("%s", LICENSE);
 
@@ -72,13 +98,7 @@ int main() {
         parse_cmd(pctx, str->str);
         call_cmd(mctx, pctx, res);
 
-        if (res->ok != 1 && res->result_type == R_ERROR) {
-            printf("ERROR: ");
-            str_print(res->emsg);
-            res->ok = 1;
-            str_clear(res->emsg);
-        }
-
+        print_result(res);
         // list_print(pctx->cmd);
 
         printf("\n");

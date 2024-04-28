@@ -45,4 +45,6 @@ void container_free(Container *container);
 
 void container_print(Container *container);
 
+Container *container_clone(Container *container);
+
 #endif

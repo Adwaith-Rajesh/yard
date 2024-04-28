@@ -74,3 +74,16 @@ void container_print(Container *container) {
             return;
     }
 }
+
+Container *container_clone(Container *container) {
+    switch (container->type) {
+        case INT:
+            return create_int_container(container->data._int, container->allocator, container->deallocator);
+        case FLOAT:
+            return create_float_container(container->data._float, container->allocator, container->deallocator);
+        case STR:
+            return create_str_container(container->data._str, container->allocator, container->deallocator);
+        default:
+            return NULL;
+    }
+}

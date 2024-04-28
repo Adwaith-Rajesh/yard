@@ -60,6 +60,7 @@ void print_result(CmdResult *res) {
             break;
 
         case R_MSG:
+        case R_HELP:
             str_print(res->emsg);
             break;
 

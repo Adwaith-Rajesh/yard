@@ -17,6 +17,8 @@
 
 #define RES res
 
+#define GET_ARG_COUNT() pctx->cmd->size - 1
+
 #define CHECK_HELP(H_MSG)                       \
     do {                                        \
         if (mctx == NULL && pctx == NULL) {     \
@@ -82,6 +84,9 @@ CMD_WRAP(set);
 
 // del key
 CMD_WRAP(del);
+
+// help
+CMD_WRAP(help);
 
 #endif
 

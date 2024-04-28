@@ -33,7 +33,7 @@ DEFINE_CMD(get) {
     Container *val = map_get(MCTX->_default_map, keyname->data._str);
 
     if (val == NULL) {
-        SET_ERROR("key does not exists");
+        SET_ERROR("key does not exist");
         return;
     }
 
@@ -41,7 +41,7 @@ DEFINE_CMD(get) {
 }
 
 CMD_WRAP(get) {
-    CHECK_HELP("Usage: get keyname");
+    CHECK_HELP("Usage:\n\tget keyname");
     ENFORCE_ARG_COUNT(1, {
         SET_ERROR("del required 1 argument, key");
         return;
@@ -67,7 +67,7 @@ DEFINE_CMD(set) {
 }
 
 CMD_WRAP(set) {
-    CHECK_HELP("Usage: set keyname value");
+    CHECK_HELP("Usage:\n\tset keyname value");
     ENFORCE_ARG_COUNT(2, {
         SET_ERROR("set requires 2 arguments, key and val");
     });
@@ -99,7 +99,7 @@ DEFINE_CMD(del) {
 }
 
 CMD_WRAP(del) {
-    CHECK_HELP("Usage: del keyname");
+    CHECK_HELP("Usage:\n\tdel keyname");
     ENFORCE_ARG_COUNT(1, {
         SET_ERROR("del requires 1 argument, key");
     });
@@ -111,4 +111,37 @@ CMD_WRAP(del) {
     });
 
     EXE_CMD(del);
+}
+
+// end del
+
+// help command
+// help <- return all the available command
+// help command <- returns the help of the given command
+
+#define GET_HELP_CALL(CMD) (((Container *)map_get(MCTX->_commands, CMD))->data._fn)(NULL, NULL, res)
+
+DEFINE_CMD(help) {
+    size_t arg_count = GET_ARG_COUNT();
+
+    if (arg_count > 1) {
+        SET_ERROR("help can only accept 0 or 1 argment");
+        return;
+    }
+
+    if (arg_count == 0) {
+        // TODO: display all the available commands
+        SET_ERROR("not implemented");
+        return;
+    }
+
+    INIT_ARGS(ARG(command_name););
+
+    // call the command with mctx = NULL, pctx = NULL
+    GET_HELP_CALL(command_name->data._str);
+}
+
+CMD_WRAP(help) {
+    CHECK_HELP("Usage:\n\thelp\n\thelp command");
+    EXE_CMD(help);
 }

@@ -68,7 +68,7 @@ void map_delete(Map *map, const char *key);
 int map_exists(Map *map, const char *key);
 
 // call the function for each entry in the map
-void map_for_each(Map *map, void (*fn)(MapEntry *));
+void map_for_each(Map *map, void (*fn)(MapEntry *, void *), void *arg);
 
 // free the entire map
 void map_free(Map *map);

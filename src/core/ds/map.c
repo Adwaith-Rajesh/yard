@@ -162,7 +162,7 @@ int map_exists(Map *map, const char *key) {
     return 0;
 }
 
-void map_for_each(Map *map, void (*fn)(MapEntry *)) {
+void map_for_each(Map *map, void (*fn)(MapEntry *, void *), void *arg) {
     for (size_t i = 0; i < map->_map_size; ++i) {
         if (map->entries[i] == NULL) {
             continue;
@@ -170,7 +170,7 @@ void map_for_each(Map *map, void (*fn)(MapEntry *)) {
 
         MapEntry *temp = map->entries[i];
         while (temp != NULL) {
-            fn(temp);
+            fn(temp, arg);
             temp = temp->next;
         }
     }

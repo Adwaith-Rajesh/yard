@@ -88,6 +88,12 @@ CMD_WRAP(del);
 // help
 CMD_WRAP(help);
 
+// pushl val
+CMD_WRAP(pushl);
+
+// popl
+CMD_WRAP(popl);
+
 #endif
 
 // context can store the help message

@@ -103,6 +103,7 @@ CMD_WRAP(del) {
     CHECK_HELP("Usage:\n\tdel keyname");
     ENFORCE_ARG_COUNT(1, {
         SET_ERROR("del requires 1 argument, key");
+        return;
     });
     ENFORCE_ARG_TYPE({
         TYPE_OF(1, STR, {
@@ -151,6 +152,8 @@ DEFINE_CMD(help) {
     INIT_ARGS(ARG(command_name););
 
     // call the command with mctx = NULL, pctx = NULL
+    // TODO: check whether the command exists
+
     GET_HELP_CALL(command_name->data._str);
 }
 
@@ -158,3 +161,49 @@ CMD_WRAP(help) {
     CHECK_HELP("Usage:\n\thelp\n\thelp command");
     EXE_CMD(help);
 }
+
+// pushl value
+
+DEFINE_CMD(pushl) {
+    INIT_ARGS(ARG(value););
+    list_pushl(MCTX->_default_list, container_clone(value));
+    SET_RESULT_MSG("Done");
+}
+
+CMD_WRAP(pushl) {
+    CHECK_HELP("Usage:\n\tpushl val\nPush a value to the left of the list.");
+    ENFORCE_ARG_COUNT(1, {
+        SET_ERROR("pushl requires one argument");
+        return;
+    });
+
+    // arg type is not an issue
+
+    EXE_CMD(pushl);
+}
+
+// end pushl
+
+// popl
+
+DEFINE_CMD(popl) {
+    void *data = list_popl(MCTX->_default_list);
+    if (data == NULL) {
+        SET_RESULT_MSG("list is empty");
+        return;
+    }
+
+    gen_result((Container *)data, RES);
+    container_free(data);
+}
+
+CMD_WRAP(popl) {
+    CHECK_HELP("Usage:\n\tpopl\nPop a value from the left of the list");
+    ENFORCE_ARG_COUNT(0, {
+        SET_ERROR("popl does not accept any args");
+        return;
+    });
+
+    EXE_CMD(popl);
+}
+// popl

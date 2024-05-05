@@ -76,6 +76,10 @@
         str_append_charp(res->emsg, MSG); \
     } while (0)
 
+#define UN_USED(ARG) (void)ARG
+
+#define NO_ARG_TYPE UN_USED(arg_count)
+
 // get key
 CMD_WRAP(get);
 
@@ -101,5 +105,3 @@ CMD_WRAP(pushr);
 CMD_WRAP(popr);
 
 #endif
-
-// context can store the help message

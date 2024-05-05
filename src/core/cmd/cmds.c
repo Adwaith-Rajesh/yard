@@ -178,6 +178,7 @@ CMD_WRAP(pushl) {
     });
 
     // arg type is not an issue
+    NO_ARG_TYPE;
 
     EXE_CMD(pushl);
 }
@@ -187,6 +188,9 @@ CMD_WRAP(pushl) {
 // popl
 
 DEFINE_CMD(popl) {
+    // popl does not accept args -> PCTX is not used
+    UN_USED(PCTX);
+
     void *data = list_popl(MCTX->_default_list);
     if (data == NULL) {
         SET_RESULT_MSG("list is empty");
@@ -204,6 +208,7 @@ CMD_WRAP(popl) {
         return;
     });
 
+    NO_ARG_TYPE;
     EXE_CMD(popl);
 }
 // end popl
@@ -223,7 +228,7 @@ CMD_WRAP(pushr) {
         return;
     });
 
-    // arg type is not an issue
+    NO_ARG_TYPE;
     EXE_CMD(pushr);
 }
 
@@ -232,6 +237,9 @@ CMD_WRAP(pushr) {
 // popr
 
 DEFINE_CMD(popr) {
+    // pops does not accept any args -> PCTX is not used
+    UN_USED(pctx);
+
     void *data = list_popr(MCTX->_default_list);
     if (data == NULL) {
         SET_RESULT_MSG("list is empty");
@@ -249,6 +257,7 @@ CMD_WRAP(popr) {
         return;
     });
 
+    NO_ARG_TYPE;
     EXE_CMD(popr);
 }
 // end popl

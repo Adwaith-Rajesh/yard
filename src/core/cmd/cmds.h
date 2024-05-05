@@ -94,6 +94,12 @@ CMD_WRAP(pushl);
 // popl
 CMD_WRAP(popl);
 
+// pushr
+CMD_WRAP(pushr);
+
+// popr
+CMD_WRAP(popr);
+
 #endif
 
 // context can store the help message

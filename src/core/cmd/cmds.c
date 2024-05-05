@@ -206,4 +206,49 @@ CMD_WRAP(popl) {
 
     EXE_CMD(popl);
 }
-// popl
+// end popl
+
+// pushr value
+
+DEFINE_CMD(pushr) {
+    INIT_ARGS(ARG(value););
+    list_pushr(MCTX->_default_list, container_clone(value));
+    SET_RESULT_MSG("Done");
+}
+
+CMD_WRAP(pushr) {
+    CHECK_HELP("Usage:\n\tpushr val\nPush a value to the right of the list.");
+    ENFORCE_ARG_COUNT(1, {
+        SET_ERROR("pushr requires one argument");
+        return;
+    });
+
+    // arg type is not an issue
+    EXE_CMD(pushr);
+}
+
+// end pushr
+
+// popr
+
+DEFINE_CMD(popr) {
+    void *data = list_popr(MCTX->_default_list);
+    if (data == NULL) {
+        SET_RESULT_MSG("list is empty");
+        return;
+    }
+
+    gen_result((Container *)data, RES);
+    container_free(data);
+}
+
+CMD_WRAP(popr) {
+    CHECK_HELP("Usage:\n\tpopl\nPop a value from the right of the list");
+    ENFORCE_ARG_COUNT(0, {
+        SET_ERROR("popr does not accept any args");
+        return;
+    });
+
+    EXE_CMD(popr);
+}
+// end popl

@@ -79,6 +79,7 @@ void print_result(CmdResult *res) {
             break;
     }
     str_clear(res->emsg);
+    str_clear(res->_str);
 }
 
 int main() {

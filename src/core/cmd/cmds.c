@@ -70,6 +70,7 @@ CMD_WRAP(set) {
     CHECK_HELP("Usage:\n\tset keyname value");
     ENFORCE_ARG_COUNT(2, {
         SET_ERROR("set requires 2 arguments, key and val");
+        return;
     });
 
     ENFORCE_ARG_TYPE({

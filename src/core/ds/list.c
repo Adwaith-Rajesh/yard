@@ -123,7 +123,11 @@ void *list_popr(List *list) {
         temp = temp->next;
     }
 
-    prev->next = NULL;
+    if (prev == NULL) {
+        list->head = NULL;
+    } else {
+        prev->next = NULL;
+    }
     void *data = temp->data;
     list->deallocator(temp);
     DEC_SIZE(list);

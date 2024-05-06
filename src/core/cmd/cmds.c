@@ -5,25 +5,6 @@
 #include "core/cmd/parser.h"
 #include "mctx.h"
 
-static void gen_result(Container *val, CmdResult *res) {
-    switch (val->type) {
-        case STR:
-            res->result_type = R_STR;
-            str_append_charp(res->_str, val->data._str);
-            break;
-        case INT:
-            res->result_type = R_INT;
-            res->_int = val->data._int;
-            break;
-        case FLOAT:
-            res->result_type = R_FLOAT;
-            res->_float = val->data._float;
-            break;
-        default:
-            return;
-    }
-}
-
 // static void CMD(YardMasterCtx *mctx, ParserCtx *pctx, )
 
 // get keyname
@@ -43,14 +24,10 @@ DEFINE_CMD(get) {
 CMD_WRAP(get) {
     CHECK_HELP("Usage:\n\tget keyname");
     ENFORCE_ARG_COUNT(1, {
-        SET_ERROR("del required 1 argument, key");
-        return;
+        SET_ERROR("get requires 1 argument, key");
     });
     ENFORCE_ARG_TYPE({
-        TYPE_OF(1, STR, {
-            SET_ERROR("keyname must be a string");
-            return;
-        });
+        TYPE_OF(1, STR, "keyname must be a string");
     });
 
     EXE_CMD(get);
@@ -70,14 +47,11 @@ CMD_WRAP(set) {
     CHECK_HELP("Usage:\n\tset keyname value");
     ENFORCE_ARG_COUNT(2, {
         SET_ERROR("set requires 2 arguments, key and val");
-        return;
     });
 
     ENFORCE_ARG_TYPE({
-        TYPE_OF(1, STR, {
-            SET_ERROR("key must be a string");
-            return;
-        });
+        TYPE_OF(1, STR, "key must be a string");
+        TYPE_OF(2, ANY, "");
     });
 
     EXE_CMD(set);
@@ -106,12 +80,8 @@ CMD_WRAP(del) {
         return;
     });
     ENFORCE_ARG_TYPE({
-        TYPE_OF(1, STR, {
-            SET_ERROR("key must be a string");
-            return;
-        });
+        TYPE_OF(1, STR, "key must be a string");
     });
-
     EXE_CMD(del);
 }
 
@@ -264,3 +234,26 @@ CMD_WRAP(popr) {
     EXE_CMD(popr);
 }
 // end popl
+
+// ################## custom list and maps ##################
+
+DEFINE_CMD(create) {
+    UN_USED(MCTX);
+    UN_USED(PCTX);
+    UN_USED(RES);
+}
+
+CMD_WRAP(create) {
+    CHECK_HELP("Usage:\n\tcreate type name\n\tcreates a new list/map other than the default one\n\ttype: list|map");
+    ENFORCE_ARG_COUNT(2, {
+        SET_ERROR("create requires 2 argument. use 'help create' for more info");
+        return;
+    });
+
+    ENFORCE_ARG_TYPE({
+        TYPE_OF(1, STR, "create type name must be a string");
+        TYPE_OF(2, STR, "name of the type must be a string");
+    });
+
+    EXE_CMD(create);
+}

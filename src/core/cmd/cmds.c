@@ -151,9 +151,12 @@ DEFINE_CMD(help) {
 
     INIT_ARGS(ARG(command_name););
 
-    // call the command with mctx = NULL, pctx = NULL
-    // TODO: check whether the command exists
+    if (map_exists(MCTX->_commands, command_name->data._str) == 0) {
+        SET_ERROR("command does not exist");
+        return;
+    }
 
+    // call the command with mctx = NULL, pctx = NULL
     GET_HELP_CALL(command_name->data._str);
 }
 

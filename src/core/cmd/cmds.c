@@ -275,3 +275,48 @@ CMD_WRAP(create) {
 }
 
 // end create
+
+DEFINE_CMD(delete) {
+    INIT_ARGS(ARG(type); ARG(name););
+
+    if (strncmp(type->data._str, "list", 4) != 0 && strncmp(type->data._str, "map", 3) != 0) {
+        SET_ERROR("type must be list or map");
+        return;
+    }
+
+    if (strncmp(type->data._str, "list", 4) == 0) {
+        if (map_exists(MCTX->_user_list, name->data._str) != 1) {
+            SET_ERROR("list does not exists");
+            return;
+        }
+        map_delete(MCTX->_user_list, name->data._str);
+        SET_RESULT_MSG("Done");
+        return;
+    }
+
+    if (strncmp(type->data._str, "map", 3) == 0) {
+        if (map_exists(MCTX->_user_maps, name->data._str) != 1) {
+            SET_ERROR("map does not exists");
+            return;
+        }
+        map_delete(MCTX->_user_list, name->data._str);
+        SET_RESULT_MSG("Done");
+        return;
+    }
+}
+
+CMD_WRAP(delete) {
+    CHECK_HELP("Usage:\n\tdelete type name\n\tdelete a user created map or list\n\ttype: list|map");
+
+    ENFORCE_ARG_COUNT(2, {
+        SET_ERROR("create requires 2 argument. use 'help create' for more info");
+        return;
+    });
+
+    ENFORCE_ARG_TYPE({
+        TYPE_OF(1, STR, "create type name must be a string");
+        TYPE_OF(2, STR, "name of the type must be a string");
+    });
+
+    EXE_CMD(delete);
+}

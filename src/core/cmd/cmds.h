@@ -37,4 +37,7 @@ CMD_WRAP(popr);
 // create
 CMD_WRAP(create);
 
+// delete
+CMD_WRAP(delete);
+
 #endif

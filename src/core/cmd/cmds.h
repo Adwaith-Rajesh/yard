@@ -40,4 +40,10 @@ CMD_WRAP(create);
 // delete
 CMD_WRAP(delete);
 
+// getz
+CMD_WRAP(getz);
+
+// setz
+CMD_WRAP(setz);
+
 #endif

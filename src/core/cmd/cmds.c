@@ -77,7 +77,6 @@ CMD_WRAP(del) {
     CHECK_HELP("Usage:\n\tdel keyname");
     ENFORCE_ARG_COUNT(1, {
         SET_ERROR("del requires 1 argument, key");
-        return;
     });
     ENFORCE_ARG_TYPE({
         TYPE_OF(1, STR, "key must be a string");
@@ -147,7 +146,6 @@ CMD_WRAP(pushl) {
     CHECK_HELP("Usage:\n\tpushl val\nPush a value to the left of the list.");
     ENFORCE_ARG_COUNT(1, {
         SET_ERROR("pushl requires one argument");
-        return;
     });
 
     // arg type is not an issue
@@ -178,7 +176,6 @@ CMD_WRAP(popl) {
     CHECK_HELP("Usage:\n\tpopl\nPop a value from the left of the list");
     ENFORCE_ARG_COUNT(0, {
         SET_ERROR("popl does not accept any args");
-        return;
     });
 
     NO_ARG_TYPE;
@@ -198,7 +195,6 @@ CMD_WRAP(pushr) {
     CHECK_HELP("Usage:\n\tpushr val\nPush a value to the right of the list.");
     ENFORCE_ARG_COUNT(1, {
         SET_ERROR("pushr requires one argument");
-        return;
     });
 
     NO_ARG_TYPE;
@@ -227,7 +223,6 @@ CMD_WRAP(popr) {
     CHECK_HELP("Usage:\n\tpopl\nPop a value from the right of the list");
     ENFORCE_ARG_COUNT(0, {
         SET_ERROR("popr does not accept any args");
-        return;
     });
 
     NO_ARG_TYPE;
@@ -263,7 +258,6 @@ CMD_WRAP(create) {
     CHECK_HELP("Usage:\n\tcreate type name\n\tcreates a new list/map other than the default one\n\ttype: list|map");
     ENFORCE_ARG_COUNT(2, {
         SET_ERROR("create requires 2 argument. use 'help create' for more info");
-        return;
     });
 
     ENFORCE_ARG_TYPE({
@@ -299,7 +293,7 @@ DEFINE_CMD(delete) {
             SET_ERROR("map does not exists");
             return;
         }
-        map_delete(MCTX->_user_list, name->data._str);
+        map_delete(MCTX->_user_maps, name->data._str);
         SET_RESULT_MSG("Done");
         return;
     }
@@ -309,8 +303,7 @@ CMD_WRAP(delete) {
     CHECK_HELP("Usage:\n\tdelete type name\n\tdelete a user created map or list\n\ttype: list|map");
 
     ENFORCE_ARG_COUNT(2, {
-        SET_ERROR("create requires 2 argument. use 'help create' for more info");
-        return;
+        SET_ERROR("create requires 2 arguments. use 'help delete' for more info");
     });
 
     ENFORCE_ARG_TYPE({
@@ -320,3 +313,76 @@ CMD_WRAP(delete) {
 
     EXE_CMD(delete);
 }
+
+// the Z commands
+
+// getz
+
+DEFINE_CMD(getz) {
+    INIT_ARGS(ARG(mapname); ARG(key));
+
+    if (map_exists(MCTX->_user_maps, mapname->data._str) == 0) {
+        SET_ERROR("map does not exist");
+        return;
+    }
+
+    Map *user_map = map_get(MCTX->_user_maps, mapname->data._str);
+
+    void *val = map_get(user_map, key->data._str);
+    if (val == NULL) {
+        SET_ERROR("key does not exist");
+        return;
+    }
+
+    gen_result((Container *)val, RES);
+}
+
+CMD_WRAP(getz) {
+    CHECK_HELP("Usage:\n\tgetz mapname key\n\tget a value from a user defined map");
+
+    ENFORCE_ARG_COUNT(2, {
+        SET_ERROR("getz requires 2 arguments. use 'help getz' for more info");
+    });
+
+    ENFORCE_ARG_TYPE({
+        TYPE_OF(1, STR, "map name must be a string");
+        TYPE_OF(2, STR, "keyname myst be a string");
+    });
+
+    EXE_CMD(getz);
+}
+
+// end getz
+
+// setz
+
+DEFINE_CMD(setz) {
+    INIT_ARGS(ARG(mapname); ARG(key); ARG(value));
+
+    if (map_exists(MCTX->_user_maps, mapname->data._str) == 0) {
+        SET_ERROR("map does not exists");
+        return;
+    }
+
+    Map *user_map = map_get(MCTX->_user_maps, mapname->data._str);
+    map_set(user_map, key->data._str, container_clone(value));
+    SET_RESULT_MSG("Done");
+}
+
+CMD_WRAP(setz) {
+    CHECK_HELP("Usage:\n\tsetz mapname key value\n\tset a value in a user defined map");
+
+    ENFORCE_ARG_COUNT(3, {
+        SET_ERROR("setz requires 3 argument. use 'help setz' for more info");
+    });
+
+    ENFORCE_ARG_TYPE({
+        TYPE_OF(1, STR, "map name must be a string");
+        TYPE_OF(2, STR, "keyname myst be a string");
+        TYPE_OF(3, ANY, "");
+    });
+
+    EXE_CMD(setz);
+}
+
+// end setz

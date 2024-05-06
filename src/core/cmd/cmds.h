@@ -3,6 +3,13 @@
 
 #include "core/cmd/cmd_utils.h"
 
+// in yard c
+void _container_print_list(ListNode *node);
+
+void _container_print_map(MapEntry *map);
+
+void _container_free(void *data);
+
 // get key
 CMD_WRAP(get);
 

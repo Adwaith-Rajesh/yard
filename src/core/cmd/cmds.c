@@ -237,10 +237,26 @@ CMD_WRAP(popr) {
 
 // ################## custom list and maps ##################
 
+// create
+
 DEFINE_CMD(create) {
-    UN_USED(MCTX);
-    UN_USED(PCTX);
-    UN_USED(RES);
+    INIT_ARGS(ARG(type); ARG(name););
+
+    if (strncmp(type->data._str, "list", 4) != 0 && strncmp(type->data._str, "map", 3) != 0) {
+        SET_ERROR("type must be list or map");
+        return;
+    }
+
+    if (strncmp(type->data._str, "list", 4) == 0) {
+        map_set(MCTX->_user_list, name->data._str, LIST_FROM_MCTX(MCTX));
+        SET_RESULT_MSG("Done");
+        return;
+    }
+
+    if (strncmp(type->data._str, "map", 3) == 0) {
+        map_set(MCTX->_user_maps, name->data._str, MAP_FROM_MCTX(MCTX));
+        SET_RESULT_MSG("Done");
+    }
 }
 
 CMD_WRAP(create) {
@@ -257,3 +273,5 @@ CMD_WRAP(create) {
 
     EXE_CMD(create);
 }
+
+// end create

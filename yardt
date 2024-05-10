@@ -7,6 +7,11 @@ from pathlib import Path
 from subprocess import Popen
 
 
+LUA_INCLUDE = '-I/usr/include/lua5.4'
+LUA_LIB = '-llua5.4'
+
+LUA_FLAGS = f'{LUA_INCLUDE} {LUA_LIB} -fPIC'
+
 CC = 'gcc'
 CFLAGS = '-Wall -Wextra -std=c11 -I./src'
 SRC_DIR = './src'
@@ -56,7 +61,7 @@ def _cc() -> str:
     return f'{CC} {CFLAGS} ' + ('-O3' if _in_release else '-O3 -g')
 
 
-def _compile_one_file(c_file: Path, force: bool = False):
+def _compile_one_file(c_file: Path, force: bool = False, lua_mode: bool = False):
     try:
         if not force and c_file.stat().st_mtime < Path(f'{OUT_DIR}/{Path(c_file).stem}.o').stat().st_mtime:
             return
@@ -64,23 +69,34 @@ def _compile_one_file(c_file: Path, force: bool = False):
         # if the file does not exists the build
         pass
 
-    _run_cmd(_cc(), '-c', c_file, '-o', f'{OUT_DIR}/{Path(c_file).stem}.o')
+    _run_cmd(_cc(), '-c', c_file, '-o', f'{OUT_DIR}/{Path(c_file).stem}.o', LUA_FLAGS if 'lua' in str(c_file) else ('-fPIC' if lua_mode else ''))
 
 
 def _build_yard_exe():
     # yard server depends on all the other object files except for the yard_client.o
-    objs = ' '.join(str(i) for i in Path(OUT_DIR).rglob('*.o'))
+    objs = ' '.join(str(i) for i in Path(OUT_DIR).rglob('*.o') if 'lua' not in str(i))
     _run_cmd(_cc(), '-o', f'{EXE_DIR}/{YARD_BIN}', objs)
 
 
-def _build_yard(with_exe: bool, force: bool = False) -> None:
+def _build_yard_lua_so():
+    objs = ' '.join(str(i) for i in Path(OUT_DIR).rglob('*.o') if 'main' not in str(i))
+    _run_cmd(_cc(), '-o', f'{EXE_DIR}/lua_yard.so', LUA_FLAGS, '-shared', objs)
+
+
+def _build_yard(exe: bool, lua: bool, force: bool = False) -> None:
     for c_file in Path(SRC_DIR).rglob('*.c'):
+        if 'lua' in str(c_file) and not lua:
+            continue
+
         if c_file.name.startswith('_'):
             continue
-        _compile_one_file(c_file, force)
+        _compile_one_file(c_file, force, lua)
 
-    if with_exe:
+    if exe:
         _build_yard_exe()
+
+    if lua:
+        _build_yard_lua_so()
 
 
 def _clean():
@@ -103,12 +119,18 @@ def main() -> int:
 
     build = sub.add_parser('build')
     build.add_argument('-r', '--release', action='store_true', help='Build YARD in release mode')
-    build.add_argument('-we', '--with-exe', action='store_true', help='Also build the exe')
+
+    target_grp = build.add_mutually_exclusive_group()
+
+    target_grp.add_argument('--exe', action='store_true', help='build the YARD exe')
+    target_grp.add_argument('--lua', action='store_true', help='build lua extension for YARD')
+
     build.add_argument('-f', '--force', action='store_true', help='Force build all files (ignore mtime)')
 
     clean = sub.add_parser('clean', help='Remove the build directory')
 
     args = parser.parse_args()
+
 
     _run_verbose = args.verbose
     _in_release = args.release if 'release' in args else False
@@ -116,7 +138,7 @@ def main() -> int:
 
     if args.sub == 'build':
         _make_dirs()
-        _build_yard(args.with_exe, args.force)
+        _build_yard(args.exe, args.lua, args.force)
 
     if args.sub == 'clean':
         _clean()

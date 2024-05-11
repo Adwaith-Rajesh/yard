@@ -58,3 +58,4 @@ tmp/
 test.c
 nobuild
 nobuild.old
+yard.so

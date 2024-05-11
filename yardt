@@ -80,7 +80,7 @@ def _build_yard_exe():
 
 def _build_yard_lua_so():
     objs = ' '.join(str(i) for i in Path(OUT_DIR).rglob('*.o') if 'main' not in str(i))
-    _run_cmd(_cc(), '-o', f'{EXE_DIR}/lua_yard.so', LUA_FLAGS, '-shared', objs)
+    _run_cmd(_cc(), '-o', f'{EXE_DIR}/yard.so', LUA_FLAGS, '-shared', objs)
 
 
 def _build_yard(exe: bool, lua: bool, force: bool = False) -> None:

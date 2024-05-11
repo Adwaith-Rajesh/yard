@@ -25,15 +25,15 @@ typedef struct {
     container_t type;
     union {
         char *_str;
-        int _int;
-        float _float;
+        long long int _int;
+        double _float;
         CmdFnType _fn;
     } data;
 } Container;
 
-Container *create_int_container(int data, void *(allocator)(size_t), void (*deallocator)(void *));
+Container *create_int_container(long long int data, void *(allocator)(size_t), void (*deallocator)(void *));
 
-Container *create_float_container(float data, void *(allocator)(size_t), void (*deallocator)(void *));
+Container *create_float_container(double data, void *(allocator)(size_t), void (*deallocator)(void *));
 
 Container *create_str_container(const char *data, void *(allocator)(size_t), void (*deallocator)(void *));
 

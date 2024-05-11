@@ -7,7 +7,7 @@
 
 #include "core/utils/log.h"
 
-Container *create_int_container(int data, void *(allocator)(size_t), void (*deallocator)(void *)) {
+Container *create_int_container(long long int data, void *(allocator)(size_t), void (*deallocator)(void *)) {
     Container *new_container = allocator(sizeof(Container));
     new_container->allocator = allocator;
     new_container->deallocator = deallocator;
@@ -16,7 +16,7 @@ Container *create_int_container(int data, void *(allocator)(size_t), void (*deal
     return new_container;
 }
 
-Container *create_float_container(float data, void *(allocator)(size_t), void (*deallocator)(void *)) {
+Container *create_float_container(double data, void *(allocator)(size_t), void (*deallocator)(void *)) {
     Container *new_container = allocator(sizeof(Container));
     new_container->allocator = allocator;
     new_container->deallocator = deallocator;
@@ -61,10 +61,10 @@ void container_free(Container *container) {
 void container_print(Container *container) {
     switch (container->type) {
         case INT:
-            printf("Container{container_t = INT, data = %d}\n", container->data._int);
+            printf("Container{container_t = INT, data = %lld}\n", container->data._int);
             return;
         case FLOAT:
-            printf("Container{container_t = FLOAT, data = %f}\n", container->data._float);
+            printf("Container{container_t = FLOAT, data = %lf}\n", container->data._float);
             return;
         case STR:
             printf("Container{container_t = STR, data = %s}\n", container->data._str);

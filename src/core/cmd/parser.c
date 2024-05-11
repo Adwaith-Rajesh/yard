@@ -55,7 +55,7 @@ static int is_float(const char *str) {
 // create container based on the type of the data
 static Container *_create_container(const char *str, void *(*allocator)(size_t), void (*deallocator)(void *)) {
     if (is_int(str)) {
-        return create_int_container(atoi(str), allocator, deallocator);
+        return create_int_container(atoll(str), allocator, deallocator);
     }
 
     if (is_float(str)) {

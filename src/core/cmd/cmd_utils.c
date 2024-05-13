@@ -1,5 +1,6 @@
 #include "core/cmd/cmd_utils.h"
 
+#include <stdarg.h>
 #include <stdio.h>
 
 void gen_result(Container *val, CmdResult *res) {
@@ -31,10 +32,18 @@ int check_help(ParserCtx *pctx, YardMasterCtx *mctx, CmdResult *res, const char 
     return 0;
 }
 
-void set_error(CmdResult *res, const char *err_msg) {
-    res->result_type = R_ERROR;
+void set_error(CmdResult *res, ...) {
+    va_list args;
+    va_start(args, res);
+
+    const char *arg = va_arg(args, const char *);
     str_clear(res->emsg);
-    str_append_charp(res->emsg, err_msg);
+    while (arg != NULL) {
+        res->result_type = R_ERROR;
+        str_append_charp(res->emsg, arg);
+        arg = va_arg(args, const char *);
+    }
+    va_end(args);
 }
 
 int check_arg_type(ArgType types[], int arg_count, ParserCtx *pctx, CmdResult *res) {
@@ -46,7 +55,7 @@ int check_arg_type(ArgType types[], int arg_count, ParserCtx *pctx, CmdResult *r
         }
 
         if ((int)(((Container *)(temp->data))->type) != (int)(types[i].type)) {
-            set_error(res, types[i].err_msg);
+            set_error(res, types[i].err_msg, NULL);
             return 0;
         }
         temp = temp->next;

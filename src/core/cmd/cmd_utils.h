@@ -39,7 +39,7 @@ typedef struct {
         }                                              \
     } while (0)
 
-#define SET_ERROR(ERR_MSG) set_error(RES, ERR_MSG)
+#define SET_ERROR(...) set_error(RES, __VA_ARGS__, NULL)
 
 #define ENFORCE_ARG_COUNT(COUNT, B)           \
     int arg_count = COUNT + 1;                \
@@ -81,7 +81,7 @@ void gen_result(Container *val, CmdResult *res);
 
 int check_help(ParserCtx *pctx, YardMasterCtx *mctx, CmdResult *res, const char *help_msg);
 
-void set_error(CmdResult *res, const char *err_msg);
+void set_error(CmdResult *res, ...);
 
 int check_arg_type(ArgType types[], int arg_count, ParserCtx *pctx, CmdResult *res);
 

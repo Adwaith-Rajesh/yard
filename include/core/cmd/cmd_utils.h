@@ -6,6 +6,7 @@
 #include "core/cmd/parser.h"
 #include "core/ds/dc.h"
 #include "core/ds/list.h"
+#include "core/ds/str.h"
 #include "mctx.h"
 
 #define ERR_MSG_SIZE 2048  // It think its big enough
@@ -37,12 +38,26 @@ typedef struct {
 
 #define GET_ARG_COUNT() pctx->cmd->size - 1
 
+// Help message builder
 #define CHECK_HELP(H_MSG)                              \
     do {                                               \
         if (check_help(PCTX, MCTX, RES, H_MSG) == 1) { \
             return;                                    \
         }                                              \
     } while (0)
+
+#define CREATE_HELP(USG_TXT, DESC_TXT, ...)                                            \
+    do {                                                                               \
+        if (create_help(PCTX, MCTX, RES, USG_TXT, DESC_TXT, __VA_ARGS__, NULL) == 1) { \
+            return;                                                                    \
+        }                                                                              \
+    } while (0)
+
+#define USAGE(USG_STR) "\tUsage:\n\t\t" USG_STR "\n"
+
+#define DESC(DESC_STR) "\tDescription:\n\t\t" DESC_STR "\n"
+
+#define ARG_DESC(ARG_NAME, ARG_D, ARG_TYPE) "\t\t" ARG_NAME "[" ARG_TYPE "]: " ARG_D "\n"
 
 #define SET_ERROR(...) set_error(RES, __VA_ARGS__, NULL)
 
@@ -91,5 +106,7 @@ void set_error(CmdResult *res, ...);
 int check_arg_type(ArgType types[], int arg_count, ParserCtx *pctx, CmdResult *res);
 
 void set_result_msg(CmdResult *res, const char *msg);
+
+int create_help(ParserCtx *pctx, YardMasterCtx *mctx, CmdResult *res, const char *usage, const char *desc, ...);
 
 #endif

@@ -8,7 +8,7 @@ from subprocess import Popen
 
 
 CC = 'gcc'
-CFLAGS = '-Wall -Wextra -std=c11 -I./src'
+CFLAGS = '-Wall -Wextra -std=c11 -I./include -I./src'
 SRC_DIR = './src'
 TEST_DIR = './test'
 BUILD_DIR = './build'

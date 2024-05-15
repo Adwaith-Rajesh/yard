@@ -1,4 +1,4 @@
-#include "dc.h"
+#include "core/ds/dc.h"
 
 #include <stdio.h>
 #include <stdlib.h>

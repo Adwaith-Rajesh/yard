@@ -10,6 +10,11 @@
 
 #define ERR_MSG_SIZE 2048  // It think its big enough
 
+// some macros to access container members
+#define C_STR(C) (C)->data._str
+#define C_INT(C) (C)->data._int
+#define C_FLOAT(C) (C)->data._float
+
 typedef enum {
     ANY = CMD_FN_PTR + 1
 } arg_t;

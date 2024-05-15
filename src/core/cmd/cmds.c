@@ -14,7 +14,7 @@ DEFINE_CMD(get) {
     Container *val = map_get(MCTX->_default_map, keyname->data._str);
 
     if (val == NULL) {
-        SET_ERROR("key does not exist");
+        SET_ERROR("key '", C_STR(keyname), "' does not exist");
         return;
     }
 
@@ -65,7 +65,7 @@ DEFINE_CMD(del) {
     INIT_ARGS(ARG(keyname););
 
     if (map_exists(MCTX->_default_map, keyname->data._str) == 0) {
-        SET_ERROR("key does not exist");
+        SET_ERROR("key '", C_STR(keyname), "' does not exist");
         return;
     }
 
@@ -121,7 +121,7 @@ DEFINE_CMD(help) {
     INIT_ARGS(ARG(command_name););
 
     if (map_exists(MCTX->_commands, command_name->data._str) == 0) {
-        SET_ERROR("command does not exist");
+        SET_ERROR("command '", C_STR(command_name), "' does not exist");
         return;
     }
 
@@ -280,7 +280,7 @@ DEFINE_CMD(delete) {
 
     if (strncmp(type->data._str, "list", 4) == 0) {
         if (map_exists(MCTX->_user_list, name->data._str) != 1) {
-            SET_ERROR("list does not exists");
+            SET_ERROR("list '", C_STR(name), "' does not exists");
             return;
         }
         map_delete(MCTX->_user_list, name->data._str);
@@ -322,7 +322,7 @@ DEFINE_CMD(getz) {
     INIT_ARGS(ARG(mapname); ARG(key));
 
     if (map_exists(MCTX->_user_maps, mapname->data._str) == 0) {
-        SET_ERROR("map does not exist");
+        SET_ERROR("map '", C_STR(mapname), "' does not exist");
         return;
     }
 
@@ -330,7 +330,7 @@ DEFINE_CMD(getz) {
 
     void *val = map_get(user_map, key->data._str);
     if (val == NULL) {
-        SET_ERROR("key does not exist");
+        SET_ERROR("key '", C_STR(key), "' does not exist");
         return;
     }
 
@@ -360,7 +360,7 @@ DEFINE_CMD(setz) {
     INIT_ARGS(ARG(mapname); ARG(key); ARG(value));
 
     if (map_exists(MCTX->_user_maps, mapname->data._str) == 0) {
-        SET_ERROR("map does not exists");
+        SET_ERROR("map '", C_STR(mapname), "' does not exist");
         return;
     }
 
@@ -392,14 +392,14 @@ DEFINE_CMD(delz) {
     INIT_ARGS(ARG(mapname); ARG(keyname));
 
     if (map_exists(MCTX->_user_maps, mapname->data._str) == 0) {
-        SET_ERROR("map ", mapname->data._str, " does not exist");
+        SET_ERROR("map ", C_STR(mapname), " does not exist");
         return;
     }
 
     Map *user_map = map_get(MCTX->_user_maps, mapname->data._str);
 
     if (map_exists(user_map, keyname->data._str) == 0) {
-        SET_ERROR("key '", keyname->data._str, "' does not exits in map '", mapname->data._str, "'");
+        SET_ERROR("key '", C_STR(keyname), "' does not exits in map '", C_STR(mapname), "'");
         return;
     }
 

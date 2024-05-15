@@ -23,13 +23,40 @@ void gen_result(Container *val, CmdResult *res) {
 }
 
 int check_help(ParserCtx *pctx, YardMasterCtx *mctx, CmdResult *res, const char *help_msg) {
-    if (mctx == NULL && pctx == NULL) {
+    (void)mctx;
+    if (pctx == NULL) {  // pctx is set to null inorder to get the help message
         res->result_type = R_HELP;
         str_clear(res->emsg);
         str_append_charp(res->emsg, help_msg);
         return 1;
     }
     return 0;
+}
+
+int create_help(ParserCtx *pctx, YardMasterCtx *mctx, CmdResult *res, const char *usage, const char *desc, ...) {
+    Str *help_string = str_create(mctx->allocator, mctx->deallocator, mctx->reallocator);
+
+    str_append_charp(help_string, usage);
+    str_append_charp(help_string, desc);
+    str_append_charp(help_string, "\tArguments:\n");
+
+    va_list args;
+    va_start(args, desc);
+
+    const char *arg = va_arg(args, const char *);
+    if (arg == NULL) {  // we dont have any args
+        str_append_charp(help_string, "\tcommand does not accept any arguments");
+    }
+
+    while (arg != NULL) {
+        str_append_charp(help_string, arg);
+        arg = va_arg(args, const char *);
+    }
+
+    va_end(args);
+    int r = check_help(pctx, mctx, res, help_string->str);
+    str_free(help_string);
+    return r;
 }
 
 void set_error(CmdResult *res, ...) {

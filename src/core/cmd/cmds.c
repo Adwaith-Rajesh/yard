@@ -22,7 +22,12 @@ DEFINE_CMD(get) {
 }
 
 CMD_WRAP(get) {
-    CHECK_HELP("Usage:\n\tget keyname");
+    // CHECK_HELP("Usage:\n\tget keyname");
+    CREATE_HELP(
+        USAGE("get key"),
+        DESC("get value associated with the key"),
+        ARG_DESC("key", "the key name", "string"));
+
     ENFORCE_ARG_COUNT(1, {
         SET_ERROR("get requires 1 argument, key");
     });
@@ -90,7 +95,7 @@ CMD_WRAP(del) {
 // help <- return all the available command
 // help command <- returns the help of the given command
 
-#define GET_HELP_CALL(CMD) (((Container *)map_get(MCTX->_commands, CMD))->data._fn)(NULL, NULL, res)
+#define GET_HELP_CALL(CMD) (((Container *)map_get(MCTX->_commands, CMD))->data._fn)(MCTX, NULL, RES)
 
 static void _get_all_cmds(MapEntry *entry, void *arg) {
     if (entry == NULL) {

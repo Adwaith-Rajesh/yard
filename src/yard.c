@@ -62,6 +62,7 @@ void register_commands(YardMasterCtx *mctx) {
     map_set(mctx->_commands, "delete", CMD_DC_FROM_MCTX(mctx, delete_wrap));
     map_set(mctx->_commands, "getz", CMD_DC_FROM_MCTX(mctx, getz_wrap));
     map_set(mctx->_commands, "setz", CMD_DC_FROM_MCTX(mctx, setz_wrap));
+    map_set(mctx->_commands, "delz", CMD_DC_FROM_MCTX(mctx, delz_wrap));
 }
 
 YardMasterCtx *mctx_create(void *(*allocator)(size_t), void (*deallocator)(void *), void *(*reallocator)(void *, size_t)) {

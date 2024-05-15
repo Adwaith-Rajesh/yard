@@ -46,4 +46,7 @@ CMD_WRAP(getz);
 // setz
 CMD_WRAP(setz);
 
+// delz
+CMD_WRAP(delz);
+
 #endif

@@ -386,3 +386,39 @@ CMD_WRAP(setz) {
 }
 
 // end setz
+
+// delz
+DEFINE_CMD(delz) {
+    INIT_ARGS(ARG(mapname); ARG(keyname));
+
+    if (map_exists(MCTX->_user_maps, mapname->data._str) == 0) {
+        SET_ERROR("map ", mapname->data._str, " does not exist");
+        return;
+    }
+
+    Map *user_map = map_get(MCTX->_user_maps, mapname->data._str);
+
+    if (map_exists(user_map, keyname->data._str) == 0) {
+        SET_ERROR("key '", keyname->data._str, "' does not exits in map '", mapname->data._str, "'");
+        return;
+    }
+
+    map_delete(user_map, keyname->data._str);
+    SET_RESULT_MSG("Done");
+}
+
+CMD_WRAP(delz) {
+    CHECK_HELP("Usage:\n\tdelz mapname key\n\tdelete a value in a user defined map");
+
+    ENFORCE_ARG_COUNT(2, {
+        SET_ERROR("delz requires 2 arguments. use 'help delz' for more info");
+    });
+
+    ENFORCE_ARG_TYPE({
+        TYPE_OF(1, STR, "map name must be a string");
+        TYPE_OF(2, STR, "key must a string");
+    });
+
+    EXE_CMD(delz);
+}
+// end delz

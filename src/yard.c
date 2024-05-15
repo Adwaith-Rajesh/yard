@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 #include "core/cmd/cmds.h"
-#include "core/ds/list.h"
 #include "core/ds/map.h"
 #include "core/ds/str.h"
 

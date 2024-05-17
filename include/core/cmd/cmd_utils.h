@@ -57,7 +57,11 @@ typedef struct {
 
 #define DESC(DESC_STR) "\tDescription:\n\t\t" DESC_STR "\n"
 
-#define ARG_DESC(ARG_NAME, ARG_D, ARG_TYPE) "\t\t" ARG_NAME "[" ARG_TYPE "]: " ARG_D "\n"
+#define ARG_DESC(ARG_NAME, ARG_D, ARG_TYPE) "\t\t" ARG_NAME "[" ARG_TYPE "] \t" ARG_D "\n"
+
+#define USE_HELP(CMD_NAME) " (use `help " CMD_NAME "` for more info)"
+
+// end help message builder
 
 #define SET_ERROR(...) set_error(RES, __VA_ARGS__, NULL)
 

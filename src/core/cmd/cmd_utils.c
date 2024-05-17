@@ -45,7 +45,7 @@ int create_help(ParserCtx *pctx, YardMasterCtx *mctx, CmdResult *res, const char
 
     const char *arg = va_arg(args, const char *);
     if (arg == NULL) {  // we dont have any args
-        str_append_charp(help_string, "\tcommand does not accept any arguments");
+        str_append_charp(help_string, "\t\tcommand does not accept any arguments");
     }
 
     while (arg != NULL) {

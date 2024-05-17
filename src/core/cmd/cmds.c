@@ -26,10 +26,10 @@ CMD_WRAP(get) {
     CREATE_HELP(
         USAGE("get key"),
         DESC("get value associated with the key"),
-        ARG_DESC("key", "the key name", "string"));
+        ARG_DESC("key", "the name of the key", "string"));
 
     ENFORCE_ARG_COUNT(1, {
-        SET_ERROR("get requires 1 argument, key");
+        SET_ERROR("get requires 1 argument, key", USE_HELP("get"));
     });
     ENFORCE_ARG_TYPE({
         TYPE_OF(1, STR, "keyname must be a string");
@@ -49,9 +49,13 @@ DEFINE_CMD(set) {
 }
 
 CMD_WRAP(set) {
-    CHECK_HELP("Usage:\n\tset keyname value");
+    CREATE_HELP(
+        USAGE("set key value"),
+        DESC("sets a key value pair"),
+        ARG_DESC("key", "the key name", "string"),
+        ARG_DESC("value", "the value associated with the key", "any"));
     ENFORCE_ARG_COUNT(2, {
-        SET_ERROR("set requires 2 arguments, key and val");
+        SET_ERROR("set requires 2 arguments, key and val", USE_HELP("set"));
     });
 
     ENFORCE_ARG_TYPE({
@@ -79,9 +83,12 @@ DEFINE_CMD(del) {
 }
 
 CMD_WRAP(del) {
-    CHECK_HELP("Usage:\n\tdel keyname");
+    CREATE_HELP(
+        USAGE("delete key"),
+        DESC("delete key from the map"),
+        ARG_DESC("key", "the key name", "string"));
     ENFORCE_ARG_COUNT(1, {
-        SET_ERROR("del requires 1 argument, key");
+        SET_ERROR("del requires 1 argument, key", USE_HELP("del"));
     });
     ENFORCE_ARG_TYPE({
         TYPE_OF(1, STR, "key must be a string");
@@ -148,9 +155,12 @@ DEFINE_CMD(pushl) {
 }
 
 CMD_WRAP(pushl) {
-    CHECK_HELP("Usage:\n\tpushl val\nPush a value to the left of the list.");
+    CREATE_HELP(
+        USAGE("pushl val"),
+        DESC("push a value to the left of the list"),
+        ARG_DESC("val", "the val to be pushed", "any"));
     ENFORCE_ARG_COUNT(1, {
-        SET_ERROR("pushl requires one argument");
+        SET_ERROR("pushl requires one argument", USE_HELP("pushl"));
     });
 
     // arg type is not an issue
@@ -178,9 +188,12 @@ DEFINE_CMD(popl) {
 }
 
 CMD_WRAP(popl) {
-    CHECK_HELP("Usage:\n\tpopl\nPop a value from the left of the list");
+    CREATE_HELP(
+        USAGE("popl"),
+        DESC("pop a value from the left of the list"),
+        NULL);
     ENFORCE_ARG_COUNT(0, {
-        SET_ERROR("popl does not accept any args");
+        SET_ERROR("popl does not accept any args", USE_HELP("popl"));
     });
 
     NO_ARG_TYPE;
@@ -198,8 +211,12 @@ DEFINE_CMD(pushr) {
 
 CMD_WRAP(pushr) {
     CHECK_HELP("Usage:\n\tpushr val\nPush a value to the right of the list.");
+    CREATE_HELP(
+        USAGE("pushr val"),
+        DESC("push a value to the right of the list"),
+        ARG_DESC("val", "the value to push", "any"));
     ENFORCE_ARG_COUNT(1, {
-        SET_ERROR("pushr requires one argument");
+        SET_ERROR("pushr requires one argument", USE_HELP("pushr"));
     });
 
     NO_ARG_TYPE;
@@ -225,9 +242,12 @@ DEFINE_CMD(popr) {
 }
 
 CMD_WRAP(popr) {
-    CHECK_HELP("Usage:\n\tpopl\nPop a value from the right of the list");
+    CREATE_HELP(
+        USAGE("popr"),
+        DESC("pop a value from the right of the list"),
+        NULL);
     ENFORCE_ARG_COUNT(0, {
-        SET_ERROR("popr does not accept any args");
+        SET_ERROR("popr does not accept any args", USE_HELP("popr"));
     });
 
     NO_ARG_TYPE;
@@ -260,9 +280,14 @@ DEFINE_CMD(create) {
 }
 
 CMD_WRAP(create) {
-    CHECK_HELP("Usage:\n\tcreate type name\n\tcreates a new list/map other than the default one\n\ttype: list|map");
+    CREATE_HELP(
+        USAGE("create type name"),
+        DESC("creates a new list/map other than the default one"),
+        ARG_DESC("type", "list or map", "string"),
+        ARG_DESC("name", "the name of the new list/map", "string"));
+
     ENFORCE_ARG_COUNT(2, {
-        SET_ERROR("create requires 2 argument. use 'help create' for more info");
+        SET_ERROR("create requires 2 argument.", USE_HELP("create"));
     });
 
     ENFORCE_ARG_TYPE({
@@ -305,10 +330,14 @@ DEFINE_CMD(delete) {
 }
 
 CMD_WRAP(delete) {
-    CHECK_HELP("Usage:\n\tdelete type name\n\tdelete a user created map or list\n\ttype: list|map");
+    CREATE_HELP(
+        USAGE("delete type name"),
+        DESC("delete a user created list or map "),
+        ARG_DESC("type", "list or map", "string"),
+        ARG_DESC("name", "the name of the list/map", "string"));
 
     ENFORCE_ARG_COUNT(2, {
-        SET_ERROR("create requires 2 arguments. use 'help delete' for more info");
+        SET_ERROR("create requires 2 arguments.", USE_HELP("delete"));
     });
 
     ENFORCE_ARG_TYPE({
@@ -343,15 +372,19 @@ DEFINE_CMD(getz) {
 }
 
 CMD_WRAP(getz) {
-    CHECK_HELP("Usage:\n\tgetz mapname key\n\tget a value from a user defined map");
+    CREATE_HELP(
+        USAGE("getz map key"),
+        DESC("get a value from a user defined map"),
+        ARG_DESC("map", "the name of the map", "string"),
+        ARG_DESC("key", "the name of the key", "string"));
 
     ENFORCE_ARG_COUNT(2, {
-        SET_ERROR("getz requires 2 arguments. use 'help getz' for more info");
+        SET_ERROR("getz requires 2 arguments", USE_HELP("getz"));
     });
 
     ENFORCE_ARG_TYPE({
         TYPE_OF(1, STR, "map name must be a string");
-        TYPE_OF(2, STR, "keyname myst be a string");
+        TYPE_OF(2, STR, "keyname must be a string");
     });
 
     EXE_CMD(getz);
@@ -375,15 +408,20 @@ DEFINE_CMD(setz) {
 }
 
 CMD_WRAP(setz) {
-    CHECK_HELP("Usage:\n\tsetz mapname key value\n\tset a value in a user defined map");
+    CREATE_HELP(
+        USAGE("setz map key"),
+        DESC("set a value in a user defined map"),
+        ARG_DESC("map", "the name of the map", "string"),
+        ARG_DESC("key", "the name of the key", "string"),
+        ARG_DESC("value", "the value to set for the key", "string"));
 
     ENFORCE_ARG_COUNT(3, {
-        SET_ERROR("setz requires 3 argument. use 'help setz' for more info");
+        SET_ERROR("setz requires 3 argument", USE_HELP("setz"));
     });
 
     ENFORCE_ARG_TYPE({
         TYPE_OF(1, STR, "map name must be a string");
-        TYPE_OF(2, STR, "keyname myst be a string");
+        TYPE_OF(2, STR, "key must be a string");
         TYPE_OF(3, ANY, "");
     });
 
@@ -413,10 +451,14 @@ DEFINE_CMD(delz) {
 }
 
 CMD_WRAP(delz) {
-    CHECK_HELP("Usage:\n\tdelz mapname key\n\tdelete a value in a user defined map");
+    CREATE_HELP(
+        USAGE("delz map key"),
+        DESC("delete a value from a user defined map"),
+        ARG_DESC("map", "the name of the map", "string"),
+        ARG_DESC("key", "the name of the key", "string"));
 
     ENFORCE_ARG_COUNT(2, {
-        SET_ERROR("delz requires 2 arguments. use 'help delz' for more info");
+        SET_ERROR("delz requires 2 arguments.", USE_HELP("delz"));
     });
 
     ENFORCE_ARG_TYPE({
